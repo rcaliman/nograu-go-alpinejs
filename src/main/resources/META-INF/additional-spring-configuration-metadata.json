@@ -1,0 +1,14 @@
+{
+  "properties": [
+    {
+      "name": "nograu.mail.from",
+      "type": "java.lang.String",
+      "description": "Endereço de e-mail utilizado como remetente nos envios."
+    },
+    {
+      "name": "nograu.base-url",
+      "type": "java.lang.String",
+      "description": "URL base da aplicação."
+    }
+  ]
+}

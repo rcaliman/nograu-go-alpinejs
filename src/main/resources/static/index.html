@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Nograu — Calculadoras para Ciclismo: Bike Fit e Conversor de Medidas</title>
+  <meta name="description"
+    content="Ferramentas gratuitas para ciclistas: calcule seu bike fit (tamanho de quadro road e MTB, altura do selim) e converta medidas de bicicleta entre sistemas métrico e imperial." />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://www.nograu.com.br" />
+
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Nograu" />
+  <meta property="og:title" content="Nograu — Calculadoras para Ciclismo: Bike Fit e Conversor de Medidas" />
+  <meta property="og:description"
+    content="Ferramentas gratuitas para ciclistas: calcule seu bike fit (tamanho de quadro road e MTB, altura do selim) e converta medidas de bicicleta entre sistemas métrico e imperial." />
+  <meta property="og:url" content="https://www.nograu.com.br" />
+  <meta property="og:locale" content="pt_BR" />
+  <meta property="og:image" content="https://www.nograu.com.br/img/og-image.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="Nograu — Calculadoras gratuitas para ciclismo" />
+
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Nograu — Calculadoras para Ciclismo: Bike Fit e Conversor de Medidas" />
+  <meta name="twitter:description"
+    content="Ferramentas gratuitas para ciclistas: calcule seu bike fit (tamanho de quadro road e MTB, altura do selim) e converta medidas de bicicleta entre sistemas métrico e imperial." />
+  <meta name="twitter:image" content="https://www.nograu.com.br/img/og-image.png" />
+  <meta name="twitter:image:alt" content="Nograu — Calculadoras gratuitas para ciclismo" />
+
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+  <link rel="icon" type="image/png" sizes="32x32" href="img/favicon-32x32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="img/favicon-16x16.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="img/apple-touch-icon.png" />
+  <meta name="theme-color" content="#6366f1" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" />
+  <link rel="stylesheet" href="theme.css" />
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Bike Fit",
+    "url": "https://www.nograu.com.br",
+    "description": "Calculadora de bike fit que determina o tamanho ideal de quadro road e MTB, altura do selim e top tube efetivo com base em medidas corporais.",
+    "applicationCategory": "SportsApplication",
+    "operatingSystem": "Todos os dispositivos",
+    "inLanguage": "pt-BR",
+    "isAccessibleForFree": true,
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "BRL" }
+  }
+  </script>
+
+  <script defer src="app.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.8/dist/cdn.min.js"></script>
+</head>
+
+<body class="page" x-data="appData()" @keydown.escape.window="conversorOpen = false; historicoOpen = false">
+
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="/" class="logo">
+        <svg width="18" height="18" viewBox="0 0 122.88 93.12" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+          <path fill-rule="evenodd" clip-rule="evenodd"
+            d="M96.67,40.7c14.47,0,26.21,11.74,26.21,26.21c0,14.47-11.74,26.21-26.21,26.21c-14.47,0-26.21-11.74-26.21-26.21c0-9.33,4.88-17.53,12.23-22.17L74.56,32.2H42.32l-4.88,11.02c8.85,4.21,14.98,13.23,14.98,23.69c0,14.47-11.74,26.21-26.21,26.21S0,81.38,0,66.91C0,52.44,11.74,40.7,26.21,40.7c1.22,0,2.41,0.08,3.59,0.24l6.32-14.3c0.65-1.48,2.1-2.36,3.62-2.36v0h36.95c0.72,0,1.39,0.19,1.98,0.53l7.92-16.87H73.04c-2.19,0-3.96-1.78-3.96-3.96S70.85,0,73.04,0h19.76v0.02c0.56,0,1.13,0.12,1.67,0.37c1.98,0.92,2.83,3.27,1.9,5.25L83.94,32.15l6.1,9.4C92.16,40.99,94.38,40.7,96.67,40.7L96.67,40.7z M26.83,6.41h20.79h0v0c1.29,0,2.47,0.53,3.33,1.39c0.86,0.87,1.4,2.07,1.4,3.39h0v0v2.22l0,0h0c0,1.33-0.54,2.53-1.41,3.39c-0.85,0.85-2.03,1.39-3.33,1.39v0h0H26.83h0v0c-1.29,0-2.47-0.53-3.33-1.39c-0.87-0.87-1.41-2.07-1.41-3.39h0v0V11.2l0,0h0c0-1.33,0.54-2.53,1.41-3.39C24.35,6.95,25.53,6.42,26.83,6.41L26.83,6.41L26.83,6.41L26.83,6.41z M34.23,50.48l-6.55,14.8c-0.88,2-3.22,2.91-5.22,2.03c-2-0.88-2.91-3.22-2.03-5.22l5.96-13.46c-0.06,0-0.12,0-0.18,0c-10.1,0-18.28,8.19-18.28,18.28c0,10.09,8.19,18.28,18.28,18.28c10.1,0,18.28-8.19,18.28-18.28C44.49,59.69,40.31,53.45,34.23,50.48L34.23,50.48z M94.7,48.73l6.36,9.79c1.19,1.83,0.67,4.28-1.16,5.47c-1.83,1.19-4.28,0.67-5.47-1.16l-7.43-11.44c-5.17,3.23-8.62,8.97-8.62,15.52c0,10.09,8.19,18.28,18.28,18.28c10.1,0,18.28-8.19,18.28-18.28c0-10.1-8.19-18.28-18.28-18.28C96.01,48.62,95.35,48.66,94.7,48.73L94.7,48.73z" />
+        </svg>
+        Bike Fit
+      </a>
+      <nav class="header-nav">
+        <a href="#" class="nav-link" x-text="t('nav.converter')"
+          @click.prevent="conversorOpen = true; $nextTick(() => $refs.convVal && $refs.convVal.focus())"></a>
+        <a href="#" class="nav-link" x-text="t('nav.history')"
+          @click.prevent="historicoOpen = true; $nextTick(() => $refs.histEmail && $refs.histEmail.focus())"></a>
+        <div class="lang-switcher">
+          <button type="button" class="lang-flag-btn" @click="langMenuOpen = !langMenuOpen"
+            :aria-label="t('lang.toggleAria')" aria-haspopup="true" :aria-expanded="langMenuOpen">
+            <svg x-show="lang === 'pt'" width="20" height="14" viewBox="0 0 24 16" aria-hidden="true">
+              <rect width="24" height="16" fill="#009c3b" />
+              <polygon points="12,2 22,8 12,14 2,8" fill="#ffdf00" />
+              <circle cx="12" cy="8" r="4" fill="#002776" />
+            </svg>
+            <svg x-show="lang === 'en'" width="20" height="14" viewBox="0 0 24 16" aria-hidden="true">
+              <rect width="24" height="16" fill="#fff" />
+              <g fill="#b22234">
+                <rect y="0" width="24" height="1.23" />
+                <rect y="2.46" width="24" height="1.23" />
+                <rect y="4.92" width="24" height="1.23" />
+                <rect y="7.38" width="24" height="1.23" />
+                <rect y="9.85" width="24" height="1.23" />
+                <rect y="12.31" width="24" height="1.23" />
+                <rect y="14.77" width="24" height="1.23" />
+              </g>
+              <rect width="10" height="8.6" fill="#3c3b6e" />
+            </svg>
+          </button>
+          <div class="lang-menu" x-cloak x-show="langMenuOpen" @click.outside="langMenuOpen = false"
+            @keydown.escape.window="langMenuOpen = false" role="menu">
+            <button type="button" class="lang-menu-item" :class="{ 'lang-menu-item-active': lang === 'pt' }"
+              role="menuitem" @click="setLang('pt'); langMenuOpen = false">
+              <svg width="18" height="13" viewBox="0 0 24 16" aria-hidden="true">
+                <rect width="24" height="16" fill="#009c3b" />
+                <polygon points="12,2 22,8 12,14 2,8" fill="#ffdf00" />
+                <circle cx="12" cy="8" r="4" fill="#002776" />
+              </svg>
+              <span>Português</span>
+            </button>
+            <button type="button" class="lang-menu-item" :class="{ 'lang-menu-item-active': lang === 'en' }"
+              role="menuitem" @click="setLang('en'); langMenuOpen = false">
+              <svg width="18" height="13" viewBox="0 0 24 16" aria-hidden="true">
+                <rect width="24" height="16" fill="#fff" />
+                <g fill="#b22234">
+                  <rect y="0" width="24" height="1.23" />
+                  <rect y="2.46" width="24" height="1.23" />
+                  <rect y="4.92" width="24" height="1.23" />
+                  <rect y="7.38" width="24" height="1.23" />
+                  <rect y="9.85" width="24" height="1.23" />
+                  <rect y="12.31" width="24" height="1.23" />
+                  <rect y="14.77" width="24" height="1.23" />
+                </g>
+                <rect width="10" height="8.6" fill="#3c3b6e" />
+              </svg>
+              <span>English</span>
+            </button>
+          </div>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <main class="centered-main">
+    <div class="form-page-content">
+
+      <p class="page-title" x-text="t('hero.title')"></p>
+      <p class="page-subtitle" x-text="t('hero.subtitle')"></p>
+
+      <div class="card">
+        <div class="card-body">
+
+          <form @submit.prevent="submitFit()" novalidate>
+
+            <div class="section-divider"><span x-text="t('form.sectionMeasures')"></span></div>
+
+            <div class="measures-grid">
+
+              <div class="form-group measure-field">
+                <label class="form-label" for="cavalo" x-text="t('form.cavalo.label')"></label>
+                <div class="measure-img-wrap">
+                  <img class="measure-img" src="img/form-cavalo.svg" :alt="t('form.cavalo.imgAlt')" />
+                </div>
+                <input class="form-input" type="number" id="cavalo" name="cavalo" x-model="fitCavalo"
+                  :placeholder="t('form.cavalo.placeholder')" min="50" max="120" step="0.1" required inputmode="decimal" />
+                <ul class="form-hint">
+                  <li x-text="t('form.cavalo.hint1')"></li>
+                  <li x-text="t('form.cavalo.hint2')"></li>
+                  <li x-text="t('form.cavalo.hint3')"></li>
+                  <li x-text="t('form.cavalo.hint4')"></li>
+                </ul>
+              </div>
+
+              <div class="form-group measure-field">
+                <label class="form-label" for="esterno" x-text="t('form.esterno.label')"></label>
+                <div class="measure-img-wrap">
+                  <img class="measure-img" src="img/form-esterno.svg" :alt="t('form.esterno.imgAlt')" />
+                </div>
+                <input class="form-input" type="number" id="esterno" name="esterno" x-model="fitEsterno"
+                  :placeholder="t('form.esterno.placeholder')" min="30" max="80" step="0.1" required inputmode="decimal" />
+                <ul class="form-hint">
+                  <li x-text="t('form.esterno.hint1')"></li>
+                  <li x-text="t('form.esterno.hint2')"></li>
+                  <li x-text="t('form.esterno.hint3')"></li>
+                </ul>
+              </div>
+
+              <div class="form-group measure-field">
+                <label class="form-label" for="braco" x-text="t('form.braco.label')"></label>
+                <div class="measure-img-wrap">
+                  <img class="measure-img" src="img/form-braco.svg" :alt="t('form.braco.imgAlt')" />
+                </div>
+                <input class="form-input" type="number" id="braco" name="braco" x-model="fitBraco"
+                  :placeholder="t('form.braco.placeholder')" min="40" max="100" step="0.1" required inputmode="decimal" />
+                <ul class="form-hint">
+                  <li x-text="t('form.braco.hint1')"></li>
+                  <li x-text="t('form.braco.hint2')"></li>
+                  <li x-text="t('form.braco.hint3')"></li>
+                </ul>
+              </div>
+
+            </div>
+
+            <div class="form-group email-group">
+              <label class="form-label" for="email">E-mail</label>
+              <input class="form-input" type="email" id="email" name="email" x-model="fitEmail"
+                placeholder="seu@email.com" required inputmode="email" />
+              <p class="form-hint" x-text="t('form.email.hint')"></p>
+            </div>
+
+            <div x-show="fitError" class="alert alert-error mt-4" role="alert">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10" />
+                <line x1="12" y1="8" x2="12" y2="12" />
+                <line x1="12" y1="16" x2="12.01" y2="16" />
+              </svg>
+              <span x-text="fitError"></span>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-full mt-4" :disabled="fitLoading">
+              <span x-text="fitLoading ? t('btn.calculating') : t('btn.calculate')"></span>
+              <span class="spinner" x-show="fitLoading"></span>
+            </button>
+
+          </form>
+
+          <div id="result-section" x-show="fitResult" role="region" aria-live="polite">
+            <div class="section-divider"><span x-text="t('result.title')"></span></div>
+
+            <div class="result-grid">
+
+              <div class="result-tile">
+                <img class="result-tile-image" src="img/result-quadro-speed.svg" :alt="t('result.speedFrame.label')" />
+                <span class="result-tile-label" x-text="t('result.speedFrame.label')"></span>
+                <span class="result-tile-value" x-text="fitResult ? fmt(fitResult.quadroSpeed) : '—'"></span>
+                <span class="result-tile-unit">cm</span>
+                <span class="result-tile-description" x-text="t('result.speedFrame.description')"></span>
+              </div>
+
+              <div class="result-tile">
+                <img class="result-tile-image" src="img/result-quadro-mtb.svg" :alt="t('result.mtbFrame.label')" />
+                <span class="result-tile-label" x-text="t('result.mtbFrame.label')"></span>
+                <span class="result-tile-value" x-text="fitResult ? fmt(fitResult.quadroMtb) : '—'"></span>
+                <span class="result-tile-unit" x-text="t('result.mtbFrame.unit')"></span>
+                <span class="result-tile-description" x-text="t('result.mtbFrame.description')"></span>
+              </div>
+
+              <div class="result-tile">
+                <img class="result-tile-image" src="img/result-altura-selim.svg" :alt="t('result.saddleHeight.label')" />
+                <span class="result-tile-label" x-text="t('result.saddleHeight.label')"></span>
+                <span class="result-tile-value" x-text="fitResult ? fmt(fitResult.alturaSelim) : '—'"></span>
+                <span class="result-tile-unit">cm</span>
+                <span class="result-tile-description" x-text="t('result.saddleHeight.description')"></span>
+              </div>
+
+              <div class="result-tile">
+                <img class="result-tile-image" src="img/result-top-tube.svg" :alt="t('result.topTube.label')" />
+                <span class="result-tile-label" x-text="t('result.topTube.label')"></span>
+                <span class="result-tile-value" x-text="fitResult ? fmt(fitResult.topTubeEfetivo) : '—'"></span>
+                <span class="result-tile-unit">cm</span>
+                <span class="result-tile-description" x-text="t('result.topTube.description')"></span>
+              </div>
+
+            </div>
+
+            <div class="alert alert-success mt-4" role="alert">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                <polyline points="22 4 12 14.01 9 11.01" />
+              </svg>
+              <div class="alert-body">
+                <strong x-text="t('result.important.title')"></strong>
+                <p x-text="t('result.important.text1')"></p>
+                <p><em x-text="t('result.important.text2')"></em></p>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="card mt-4">
+        <div class="card-body">
+          <div class="section-divider"><span x-text="t('mural.title')"></span></div>
+
+          <div id="mural-lista">
+            <p class="mural-empty" x-show="muralLoading" x-text="t('mural.loading')"></p>
+            <p class="mural-empty" x-show="!muralLoading && !muralLoadError && muralMessages.length === 0"
+              x-text="t('mural.empty')"></p>
+            <p class="mural-error-text" x-show="muralLoadError" x-text="t('mural.loadError')"></p>
+            <template x-for="m in muralMessages" :key="m.id">
+              <div class="mural-item">
+                <div class="mural-item-header">
+                  <span class="mural-item-nome" x-text="m.nome"></span>
+                  <span class="mural-item-data" x-text="fmtMuralDate(m.createdAt)"></span>
+                </div>
+                <p class="mural-item-resposta" x-show="m.idResposta && muralRespostas[m.idResposta]">
+                  <span x-text="t('mural.replyingToInline')"></span> <strong x-text="muralRespostas[m.idResposta]?.nome"></strong>
+                </p>
+                <p class="mural-item-texto" x-text="m.mensagem"></p>
+                <div class="mural-item-actions">
+                  <a href="#mural-form" class="mural-responder-link" x-text="t('mural.replyLink')"
+                    @click.prevent="responder(m)"></a>
+                </div>
+              </div>
+            </template>
+          </div>
+
+          <div class="mural-paginacao" x-show="muralTotalPages > 1">
+            <button class="mural-paginacao-btn" :disabled="muralPage === 0" @click="carregarMensagens(muralPage - 1)"
+              :aria-label="t('mural.prevPage')">&#8592;</button>
+            <span class="mural-paginacao-info"
+              x-text="t('mural.pageInfo', { current: muralPage + 1, total: muralTotalPages })"></span>
+            <button class="mural-paginacao-btn" :disabled="muralPage === muralTotalPages - 1"
+              @click="carregarMensagens(muralPage + 1)" :aria-label="t('mural.nextPage')">&#8594;</button>
+          </div>
+
+          <div class="section-divider"><span x-text="t('mural.leaveMessage')"></span></div>
+
+          <form id="mural-form" @submit.prevent="enviarMensagem()" novalidate>
+            <div class="mural-respondendo" x-show="muralIdResposta">
+              <span><span x-text="t('mural.replyingTo')"></span> <strong x-text="muralRespondendoNome"></strong></span>
+              <button type="button" class="mural-respondendo-cancelar" @click="cancelarResposta()"
+                :aria-label="t('mural.cancelReply')">&#x2715;</button>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="mural-nome" x-text="t('mural.form.name')"></label>
+              <input class="form-input" type="text" id="mural-nome" x-model="muralNome"
+                :placeholder="t('mural.form.namePlaceholder')" />
+            </div>
+            <div class="form-group mt-4">
+              <label class="form-label" for="mural-email-input">E-mail</label>
+              <input class="form-input" type="email" id="mural-email-input" x-model="muralEmail"
+                placeholder="seu@email.com" />
+            </div>
+            <div class="form-group mt-4">
+              <label class="form-label" for="mural-mensagem-input" x-text="t('mural.form.message')"></label>
+              <textarea class="form-input" id="mural-mensagem-input" rows="3" x-model="muralMensagem"
+                :placeholder="t('mural.form.messagePlaceholder')"></textarea>
+            </div>
+            <div class="alert alert-error mt-4" x-show="muralError" role="alert">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10" />
+                <line x1="12" y1="8" x2="12" y2="12" />
+                <line x1="12" y1="16" x2="12.01" y2="16" />
+              </svg>
+              <span x-text="muralError"></span>
+            </div>
+            <div class="alert alert-success mt-4" x-show="muralSuccess" role="alert">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                <polyline points="22 4 12 14.01 9 11.01" />
+              </svg>
+              <span x-text="t('mural.form.success')"></span>
+            </div>
+            <button type="submit" class="btn btn-primary btn-full mt-4" :disabled="muralSubmitting">
+              <span x-text="muralSubmitting ? t('mural.form.sending') : t('mural.form.send')"></span>
+              <span class="spinner" x-show="muralSubmitting"></span>
+            </button>
+          </form>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container text-center text-xs text-subtle">
+      <span x-text="t('footer.text')"></span><span x-show="footerQtd > 1"
+        x-text="t('footer.countSuffix', { qtd: footerQtd })"></span>
+    </div>
+  </footer>
+
+  <!-- Conversor Modal -->
+  <div x-cloak x-show="conversorOpen" class="modal-backdrop" role="dialog" aria-modal="true"
+    aria-labelledby="conversor-title" :aria-hidden="conversorOpen ? 'false' : 'true'"
+    @click.self="conversorOpen = false">
+    <div class="modal-panel">
+      <div class="modal-header">
+        <span class="modal-title" id="conversor-title" x-text="t('converter.title')"></span>
+        <button class="modal-close" @click="conversorOpen = false" :aria-label="t('common.close')">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+            stroke-linecap="round">
+            <line x1="18" y1="6" x2="6" y2="18" />
+            <line x1="6" y1="6" x2="18" y2="18" />
+          </svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="conv-tabs" role="tablist">
+          <template x-for="tab in convTabs" :key="tab.key">
+            <button class="conv-tab" role="tab" :class="{ 'conv-tab-active': convActiveTab === tab.key }"
+              @click="convActiveTab = tab.key" x-text="t('tab.' + tab.key)"></button>
+          </template>
+        </div>
+        <div class="form-group">
+          <label class="form-label" x-text="t('converter.value')"></label>
+          <input type="number" class="form-input" x-ref="convVal" x-model="convState[convActiveTab].value"
+            :placeholder="t('converter.valuePlaceholder')" inputmode="decimal" step="any" />
+        </div>
+        <div class="conv-units-row mt-4">
+          <div class="form-group" style="flex:1;min-width:0">
+            <label class="form-label" x-text="t('converter.from')"></label>
+            <select class="form-input" x-model="convState[convActiveTab].from">
+              <template x-for="unit in convUnits" :key="unit[0]">
+                <option :value="unit[0]" :selected="unit[0] === convState[convActiveTab].from"
+                  x-text="t('unit.' + unit[0])"></option>
+              </template>
+            </select>
+          </div>
+          <button type="button" class="conv-swap-btn" @click="swapConv(convActiveTab)"
+            :aria-label="t('converter.swap')">⇄</button>
+          <div class="form-group" style="flex:1;min-width:0">
+            <label class="form-label" x-text="t('converter.to')"></label>
+            <select class="form-input" x-model="convState[convActiveTab].to">
+              <template x-for="unit in convUnits" :key="unit[0]">
+                <option :value="unit[0]" :selected="unit[0] === convState[convActiveTab].to"
+                  x-text="t('unit.' + unit[0])"></option>
+              </template>
+            </select>
+          </div>
+        </div>
+        <div class="form-group mt-4">
+          <label class="form-label" x-text="t('converter.result')"></label>
+          <input type="text" class="form-input conv-result-input" readonly :value="convResult(convActiveTab)"
+            placeholder="—" />
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Histórico Modal -->
+  <div x-cloak x-show="historicoOpen" class="modal-backdrop" role="dialog" aria-modal="true"
+    aria-labelledby="historico-title" :aria-hidden="historicoOpen ? 'false' : 'true'"
+    @click.self="historicoOpen = false">
+    <div class="modal-panel">
+      <div class="modal-header">
+        <span class="modal-title" id="historico-title" x-text="t('history.title')"></span>
+        <button class="modal-close" @click="historicoOpen = false" :aria-label="t('common.close')">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+            stroke-linecap="round">
+            <line x1="18" y1="6" x2="6" y2="18" />
+            <line x1="6" y1="6" x2="18" y2="18" />
+          </svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="historico-search">
+          <input type="email" class="form-input" x-ref="histEmail" x-model="historicoEmail"
+            :placeholder="t('history.emailPlaceholder')" autocomplete="email" @keydown.enter="buscarHistorico()" />
+          <button class="btn btn-primary" @click="buscarHistorico()" :disabled="historicoLoading"
+            x-text="historicoLoading ? t('history.searching') : t('history.search')"></button>
+        </div>
+        <p class="historico-empty" x-show="historicoState === 'empty'" x-text="t('history.empty')"></p>
+        <p class="historico-error" x-show="historicoState === 'error'" x-text="t('history.error')"></p>
+        <div class="historico-table-wrap" x-show="historicoState === 'ok'">
+          <table class="historico-table">
+            <thead>
+              <tr>
+                <th x-text="t('history.table.date')"></th>
+                <th x-text="t('history.table.cavalo')"></th>
+                <th x-text="t('history.table.esterno')"></th>
+                <th x-text="t('history.table.braco')"></th>
+                <th x-text="t('history.table.speedFrame')"></th>
+                <th x-text="t('history.table.mtbFrame')"></th>
+                <th x-text="t('history.table.saddleHeight')"></th>
+                <th x-text="t('history.table.topTube')"></th>
+              </tr>
+            </thead>
+            <tbody>
+              <template x-for="(item, i) in historicoItems" :key="i">
+                <tr>
+                  <td x-text="fmtDate(item.createdAt)"></td>
+                  <td x-text="fmt(item.cavalo) + ' cm'"></td>
+                  <td x-text="fmt(item.esterno) + ' cm'"></td>
+                  <td x-text="fmt(item.braco) + ' cm'"></td>
+                  <td x-text="fmt(item.quadroSpeed) + ' cm'"></td>
+                  <td x-text="fmt(item.quadroMtb) + ' ' + t('result.mtbFrame.unit')"></td>
+                  <td x-text="fmt(item.alturaSelim) + ' cm'"></td>
+                  <td x-text="fmt(item.topTubeEfetivo) + ' cm'"></td>
+                </tr>
+              </template>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</body>
+
+</html>
