@@ -1,3 +1,10 @@
+.claude
+.gitattributes
+.git
+.mvn
+.vscode
+target
+HELP.md
 # Compiled class file
 *.class
 
