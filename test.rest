@@ -16,6 +16,8 @@ GET http://localhost:8080/fit/044ee0bc-6eb1-496e-a9c1-24c95a04e03e
 
 ###
 GET http://localhost:8080/fit/qtd
+###
+GET http://www.nograu.com.br/fit/qtd
 
 ###
 POST http://localhost:8080/mensagem

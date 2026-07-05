@@ -1,6 +1,9 @@
 package app.pcd.service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -14,11 +17,13 @@ import lombok.RequiredArgsConstructor;
 @Service
 public class CalculoEmprestimoService {
 
+    private static final ZoneId ZONA_BRASIL = ZoneId.of("America/Sao_Paulo");
+
     private final CalculoEmprestimoRepository calculoEmprestimoRepository;
     private final CalculadoraFinanceiraService calculadoraFinanceiraService;
 
     public Long qtdCalculos() {
-        var inicioDoDia = LocalDateTime.now().withHour(0).withMinute(0).withSecond(0).withNano(0);
+        var inicioDoDia = inicioDoDiaAtual();
         var fimDoDia = inicioDoDia.plusDays(1);
         return calculoEmprestimoRepository.countByCreatedAtBetween(inicioDoDia, fimDoDia);
     }
@@ -36,9 +41,14 @@ public class CalculoEmprestimoService {
     }
 
     public List<CalculoEmprestimo> listarDoDia() {
-        var inicioDoDia = LocalDateTime.now().withHour(0).withMinute(0).withSecond(0).withNano(0);
+        var inicioDoDia = inicioDoDiaAtual();
         return calculoEmprestimoRepository.findByCreatedAtBetweenOrderByCreatedAtDesc(inicioDoDia, inicioDoDia.plusDays(1));
     }
 
+    private LocalDateTime inicioDoDiaAtual() {
+        LocalDate hoje = LocalDate.now(ZONA_BRASIL);
+        ZonedDateTime inicioNoBrasil = hoje.atStartOfDay(ZONA_BRASIL);
+        return inicioNoBrasil.withZoneSameInstant(ZoneId.systemDefault()).toLocalDateTime();
+    }
 
 }

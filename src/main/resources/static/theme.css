@@ -629,8 +629,12 @@ ul.form-hint {
   background: var(--primary-tint);
 }
 
-/* ── Desktop scale (×1.10) ── */
+/* ── Desktop scale (×1.10, +125% global bump) ── */
 @media (min-width: 641px) {
+  html {
+    font-size: 125%;
+  }
+
   :root {
     --r: 0.6875rem;
     --r-sm: 0.4375rem;

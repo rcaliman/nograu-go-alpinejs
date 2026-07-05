@@ -1,7 +1,6 @@
 package app.bikefit.service;
 
-import java.time.LocalDateTime;
-import java.time.LocalTime;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -37,11 +36,14 @@ public class FitService {
     }
 
     public List<FitDtoResponse> findByEmail(@RequestParam String email) {
-        var fits = fitRepository.findAllByEmailOrderByCreatedAtDesc(email).orElseThrow(() -> new RuntimeException("Fit não encontrado"));
+        var fits = fitRepository.findAllByEmailOrderByCreatedAtDesc(email)
+                .orElseThrow(() -> new RuntimeException("Fit não encontrado"));
         return fits.stream().map(FitDtoResponse::dtoResponse).toList();
     }
 
     public long qtdCalculosHoje() {
-        return fitRepository.countByCreatedAtBetween(LocalDateTime.now().with(LocalTime.MIN), LocalDateTime.now().with(LocalTime.MAX));
+        LocalDate hoje = LocalDate.now();  
+        return fitRepository.countByCreatedAtBetween(hoje.atStartOfDay(), hoje.plusDays(1).atStartOfDay());
     }
+
 }
