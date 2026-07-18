@@ -5,6 +5,8 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.time.LocalDateTime;
 
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -19,6 +21,7 @@ import lombok.RequiredArgsConstructor;
 public class BancoService {
 
     private final BancoRepository bancoRepository;
+    private final MessageSource messageSource;
 
     public LocalDateTime dataPrimeiroRegistro() {
         return bancoRepository.findFirstByOrderByCreatedAtDesc().orElseThrow(() -> new RuntimeException("Nenhum banco cadastrado")).getCreatedAt();
@@ -57,7 +60,8 @@ public class BancoService {
 
     public Banco buscaBanco(String numeroCodigo) {
         return bancoRepository.findByNumeroCodigo(formataCodigo(numeroCodigo))
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Banco não encontrado"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+                        messageSource.getMessage("pcd.erro.banco.naoEncontrado", null, LocaleContextHolder.getLocale())));
     }
 
     private String formataCodigo(String codigo) {

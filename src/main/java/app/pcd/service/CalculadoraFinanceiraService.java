@@ -5,7 +5,9 @@ import java.time.Period;
 
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import lombok.RequiredArgsConstructor;
 
@@ -13,7 +15,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class CalculadoraFinanceiraService {
 
-    private MessageSource messageSource;
+    private final MessageSource messageSource;
 
     public double rate(int nper, double pmt, double pv) {
 
@@ -41,7 +43,7 @@ public class CalculadoraFinanceiraService {
 
         String erroRate = messageSource.getMessage("pcd.erro.rate", null, LocaleContextHolder.getLocale());
 
-        throw new RuntimeException(erroRate);
+        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, erroRate);
     }
 
     public double pv(double rate, int nper, double pmt) {

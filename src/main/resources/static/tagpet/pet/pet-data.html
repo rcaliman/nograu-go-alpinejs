@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tag Pet — Nograu</title>
+  <meta name="description" content="Dados e etiquetas do seu pet cadastrado no Tag Pet.">
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" type="image/svg+xml" href="../../favicon.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="../../img/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="../../img/favicon-16x16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="../../img/apple-touch-icon.png">
+  <meta name="theme-color" content="#6366f1">
+  <link rel="stylesheet" href="../../theme.css">
+  <link rel="stylesheet" href="../theme.css">
+  <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
+  <script src="../i18n.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  <script defer src="/navbar.js"></script>
+  <style>
+    @page { margin: 0; }
+    @media print {
+      .no-print { display: none !important; }
+      html, body { margin: 0 !important; padding: 0 !important; background: white !important; }
+      body { display: flex !important; align-items: center !important; justify-content: center !important; min-height: 100vh !important; }
+      main { display: flex !important; align-items: center !important; justify-content: center !important; width: 100% !important; padding: 0 !important; flex: 1 !important; }
+      main > div { width: auto !important; max-width: none !important; }
+      .print-wrapper { align-items: center !important; justify-content: center !important; }
+      .card { box-shadow: none !important; border-radius: 0 !important; background: white !important; border: none !important; }
+      .pet-tag { break-inside: avoid; page-break-inside: avoid; }
+    }
+  </style>
+</head>
+<body x-data class="page">
+
+<div id="navbar-mount"></div>
+
+<main class="centered-main">
+  <div x-data="petData()" class="form-page-content">
+
+    <template x-if="loading">
+      <div style="display:flex;justify-content:center;padding:3rem 0">
+        <span class="spinner" style="width:1.5rem;height:1.5rem;color:var(--primary)"></span>
+      </div>
+    </template>
+
+    <template x-if="notFound">
+      <div class="alert alert-error">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
+        </svg>
+        <span x-text="$store.i18n.t('error.petNotFound')">Pet não encontrado.</span>
+      </div>
+    </template>
+
+    <template x-if="!loading && !notFound && pet">
+      <div class="flex flex-col gap-4 print-wrapper">
+
+        <!-- Header -->
+        <div class="flex items-start justify-between gap-3 no-print">
+          <div>
+            <h1 class="font-bold" style="font-size:1.375rem;margin-bottom:0.25rem" x-text="pet.name"></h1>
+            <p class="text-muted text-sm" x-text="pet.type"></p>
+          </div>
+          <div class="flex gap-2 shrink-0">
+            <template x-if="secret">
+              <a :href="`pet-form.html?id=${petId}&secret=${encodeURIComponent(secret)}`" class="btn btn-outline btn-sm">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H6a2 2 0 00-2 2v14a2 2 0 002 2h12a2 2 0 002-2v-5"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                Editar
+              </a>
+            </template>
+            <button onclick="window.print()" class="btn btn-outline btn-sm">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9V2h12v7"/><path d="M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+              <span x-text="$store.i18n.t('data.tags.print')">Imprimir</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Info para o dono -->
+        <div class="alert alert-success no-print" style="border-radius:var(--r)">
+          <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/></svg>
+          <span class="text-sm" x-text="$store.i18n.t('data.editInfo')">Todos os contatos receberão por e-mail um link para alterar essas informações. Não é preciso reimprimir após alterações.</span>
+        </div>
+
+        <!-- Etiquetas para impressão -->
+        <div class="card">
+          <div class="card-body flex flex-col gap-4">
+            <div class="flex items-start justify-between gap-3 no-print">
+              <div>
+                <div class="card-heading" x-text="$store.i18n.t('data.tags.title')">Etiquetas para impressão</div>
+                <p class="text-muted text-xs" style="margin-top:0.1875rem" x-text="$store.i18n.t('data.tags.subtitle')">Imprima, recorte e plastifique.</p>
+              </div>
+            </div>
+
+            <template x-if="!viewQrDataUrl">
+              <div style="display:flex;justify-content:center;padding:1.5rem 0">
+                <span class="spinner" style="color:var(--primary)"></span>
+              </div>
+            </template>
+
+            <template x-if="viewQrDataUrl">
+              <div class="flex flex-col" style="align-items:center;gap:0.25rem">
+                <template x-for="size in tagSizes" :key="size">
+                  <div class="pet-tag" :style="`width: ${size + 6}mm`">
+                    <span class="tag-header">nograu.com.br</span>
+                    <img :src="viewQrDataUrl" :style="`width: ${size}mm; height: ${size}mm;`" alt="QR Code">
+                    <span class="tag-footer" x-text="pet.name"></span>
+                  </div>
+                </template>
+              </div>
+            </template>
+
+            <p class="no-print text-subtle text-xs text-center" x-text="$store.i18n.t('data.tags.sizes')">
+              Os tamanhos são 15mm, 20mm, 25mm e 30mm — exatos na impressão.
+            </p>
+          </div>
+        </div>
+
+        <!-- Dados do Pet -->
+        <div class="card no-print">
+          <div class="card-body flex flex-col gap-3">
+            <div class="card-heading" x-text="$store.i18n.t('section.petData')">Dados do Pet</div>
+            <div class="data-grid">
+              <div class="data-row">
+                <span class="data-label" x-text="$store.i18n.t('label.name')">Nome</span>
+                <span class="data-value" x-text="pet.name"></span>
+              </div>
+              <div class="data-row">
+                <span class="data-label" x-text="$store.i18n.t('label.type')">Tipo</span>
+                <span class="data-value" x-text="pet.type"></span>
+              </div>
+              <div class="data-row">
+                <span class="data-label" x-text="$store.i18n.t('label.community')">Comunitário</span>
+                <span class="badge" :class="pet.isCommunity ? 'badge-success' : 'badge-neutral'"
+                    x-text="pet.isCommunity ? $store.i18n.t('label.yes') : $store.i18n.t('label.no')"></span>
+              </div>
+              <template x-if="pet.moreInfo">
+                <div class="data-row" style="grid-template-columns:6.875rem 1fr">
+                  <span class="data-label" x-text="$store.i18n.t('label.moreInfo')">Info adicional</span>
+                  <span class="data-value" style="font-weight:400;color:var(--muted)" x-text="pet.moreInfo"></span>
+                </div>
+              </template>
+            </div>
+          </div>
+        </div>
+
+        <!-- Contatos -->
+        <div class="card no-print">
+          <div class="card-body flex flex-col gap-4">
+            <div class="card-heading" x-text="$store.i18n.t('section.contacts')">Contatos</div>
+
+            <template x-if="(pet.contacts ?? []).length === 0">
+              <p class="text-center text-muted text-sm" style="padding:0.5rem 0"
+                 x-text="$store.i18n.t('section.contactsEmpty')">Nenhum contato cadastrado.</p>
+            </template>
+
+            <template x-for="(contact, index) in (pet.contacts ?? [])" :key="index">
+              <div class="flex flex-col gap-3" style="padding-top:1rem;border-top:1px solid var(--border)">
+                <span class="section-label" x-text="`${$store.i18n.t('label.contact')} ${index + 1}`"></span>
+                <div class="data-grid">
+                  <div class="data-row">
+                    <span class="data-label" x-text="$store.i18n.t('label.name')">Nome</span>
+                    <span class="data-value" x-text="contact.name || '—'"></span>
+                  </div>
+                  <div class="data-row">
+                    <span class="data-label" x-text="$store.i18n.t('label.phone')">Telefone</span>
+                    <span class="data-value" x-text="contact.contactNumber || '—'"></span>
+                  </div>
+                  <div class="data-row">
+                    <span class="data-label" x-text="$store.i18n.t('label.email')">E-mail</span>
+                    <span class="data-value" x-text="contact.email || '—'"></span>
+                  </div>
+                  <template x-if="contact.location">
+                    <div class="data-row">
+                      <span class="data-label" x-text="$store.i18n.t('label.location')">Localização</span>
+                      <span class="data-value" x-text="contact.location"></span>
+                    </div>
+                  </template>
+                </div>
+                <template x-if="contact.chatApp && contact.chatApp.length > 0">
+                  <div style="display:flex;flex-wrap:wrap;gap:0.375rem">
+                    <template x-for="app in contact.chatApp" :key="app">
+                      <span class="badge badge-outline" x-text="app"></span>
+                    </template>
+                  </div>
+                </template>
+              </div>
+            </template>
+          </div>
+        </div>
+
+      </div>
+    </template>
+
+  </div>
+</main>
+
+<script>
+  function petData() {
+    return {
+      loading: true,
+      notFound: false,
+      pet: null,
+      petId: null,
+      secret: null,
+      viewQrDataUrl: null,
+      tagSizes: [15, 20, 25, 30],
+      async init() {
+        const params = new URLSearchParams(window.location.search);
+        this.petId = params.get('id');
+        this.secret = params.get('secret');
+
+        if (!this.petId) {
+          this.notFound = true;
+          this.loading = false;
+          return;
+        }
+
+        try {
+          const res = await fetch(`/pets/${this.petId}`);
+          if (!res.ok) throw new Error();
+          this.pet = await res.json();
+          document.title = `${this.pet.name} — Nograu`;
+        } catch {
+          this.notFound = true;
+          this.loading = false;
+          return;
+        }
+
+        this.loading = false;
+
+        try {
+          const viewUrl = `${window.location.origin}/tagpet/pet/pet-view.html?id=${this.petId}`;
+          this.viewQrDataUrl = await QRCode.toDataURL(viewUrl, {
+            width: 300,
+            margin: 1,
+            color: { dark: '#000000', light: '#ffffff' }
+          });
+        } catch (e) {
+          console.error('Erro ao gerar QR code:', e);
+        }
+      }
+    }
+  }
+</script>
+
+</body>
+</html>

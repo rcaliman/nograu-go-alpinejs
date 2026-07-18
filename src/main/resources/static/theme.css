@@ -291,6 +291,23 @@ ul.form-hint {
   margin-bottom: 1.5rem;
 }
 
+.history-link {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 0.375rem;
+  margin-top: -0.625rem;
+  margin-bottom: 0.875rem;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--primary);
+  text-decoration: none;
+}
+
+.history-link:hover {
+  text-decoration: underline;
+}
+
 .section-divider {
   display: flex;
   align-items: center;
@@ -432,6 +449,28 @@ ul.form-hint {
 
 .nav-link:hover {
   color: var(--text);
+}
+
+.nav-toggle {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  background: transparent;
+  color: var(--text);
+  cursor: pointer;
+  transition: border-color .15s;
+}
+
+.nav-toggle:hover {
+  border-color: var(--primary);
+}
+
+.nav-toggle svg {
+  display: block;
 }
 
 .lang-switcher {
@@ -791,28 +830,57 @@ ul.form-hint {
   }
 }
 
+@media (max-width: 640px) {
+  .header-inner {
+    position: relative;
+  }
+
+  .nav-toggle {
+    display: flex;
+  }
+
+  .header-nav {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    z-index: 30;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    box-shadow: var(--shadow);
+    padding: 0.25rem 1rem 0.75rem;
+  }
+
+  .header-nav.header-nav-open {
+    display: flex;
+  }
+
+  .header-nav .nav-link {
+    padding: 0.625rem 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .header-nav .lang-switcher {
+    align-self: flex-start;
+    margin-top: 0.5rem;
+  }
+}
+
 @media (max-width: 480px) {
   .container {
     padding: 0 1rem;
   }
 
-  .site-header {
-    height: auto;
-  }
-
   .header-inner {
     padding: 0.5rem 1rem;
-    flex-wrap: wrap;
-    row-gap: 0.375rem;
   }
 
   .logo {
     white-space: nowrap;
-  }
-
-  .header-nav {
-    gap: 0.625rem;
-    flex-wrap: wrap;
   }
 
   .nav-link {

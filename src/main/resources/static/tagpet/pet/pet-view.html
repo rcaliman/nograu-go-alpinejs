@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tag Pet — Nograu</title>
+  <meta name="description" content="Informações e contatos dos responsáveis pelo pet. Escaneie o QR Code para entrar em contato.">
+  <meta name="robots" content="noindex, follow">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Nograu">
+  <meta property="og:title" content="Tag Pet — Identificação de Pet — Nograu">
+  <meta property="og:description" content="Veja as informações e contatos dos responsáveis por este pet.">
+  <link rel="icon" type="image/svg+xml" href="../../favicon.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="../../img/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="../../img/favicon-16x16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="../../img/apple-touch-icon.png">
+  <meta name="theme-color" content="#6366f1">
+  <link rel="stylesheet" href="../../theme.css">
+  <link rel="stylesheet" href="../theme.css">
+  <script src="../i18n.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  <script defer src="/navbar.js"></script>
+</head>
+<body x-data class="page">
+
+<div id="navbar-mount"></div>
+
+<main class="page-main">
+  <div x-data="petView()" class="scan-main">
+
+    <template x-if="loading">
+      <div class="flex items-center justify-between" style="padding:3rem 0;justify-content:center">
+        <span class="spinner" style="width:1.5rem;height:1.5rem;color:var(--primary)"></span>
+      </div>
+    </template>
+
+    <template x-if="notFound">
+      <div class="alert alert-error">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
+        </svg>
+        <span x-text="$store.i18n.t('error.petNotFound')">Pet não encontrado.</span>
+      </div>
+    </template>
+
+    <template x-if="!loading && !notFound && pet">
+      <div>
+
+        <!-- Pet header -->
+        <div style="margin-bottom:1.75rem">
+          <div class="pet-avatar">🐾</div>
+          <h1 class="pet-name-lg" x-text="pet.name"></h1>
+          <p class="pet-type-sm" x-text="pet.type"></p>
+          <template x-if="pet.isCommunity">
+            <div style="display:inline-flex;align-items:center;gap:0.3125rem;margin-top:0.5rem;font-size:0.75rem;color:var(--success);font-weight:500">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+              Pet comunitário
+            </div>
+          </template>
+        </div>
+
+        <!-- Info adicional -->
+        <template x-if="pet.moreInfo">
+          <div class="card" style="padding:0.875rem 1.125rem;margin-bottom:1rem">
+            <p style="font-size:0.8125rem;color:var(--muted);line-height:1.6" x-text="pet.moreInfo"></p>
+          </div>
+        </template>
+
+        <!-- Contatos -->
+        <template x-if="(pet.contacts ?? []).length === 0">
+          <p class="text-center text-muted text-sm" style="padding:1.5rem 0"
+             x-text="$store.i18n.t('section.contactsEmpty')">Nenhum contato cadastrado.</p>
+        </template>
+
+        <template x-for="(contact, index) in (pet.contacts ?? [])" :key="index">
+          <div class="card contact-card">
+            <div class="contact-name" x-text="contact.name || ($store.i18n.t('label.contact') + ' ' + (index + 1))"></div>
+            <div class="contact-actions">
+
+              <!-- Ligar -->
+              <template x-if="contact.contactNumber">
+                <a :href="'tel:' + contact.contactNumber" class="contact-btn cb-call">
+                  <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="shrink-0"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 012.12 4.18 2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+                  <span>Ligar</span>
+                  <span class="ml-auto" style="font-size:0.75rem;opacity:.65" x-text="contact.contactNumber"></span>
+                </a>
+              </template>
+
+              <!-- WhatsApp -->
+              <template x-if="contact.contactNumber && hasApp(contact, 'WhatsApp')">
+                <a :href="whatsappUrl(contact.contactNumber)" target="_blank" rel="noopener" class="contact-btn cb-whatsapp">
+                  <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor" class="shrink-0"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+                  <span>WhatsApp</span>
+                </a>
+              </template>
+
+              <!-- Telegram -->
+              <template x-if="contact.contactNumber && hasApp(contact, 'Telegram')">
+                <a :href="'https://t.me/+' + contact.contactNumber.replace(/\D/g, '')" target="_blank" rel="noopener" class="contact-btn cb-telegram">
+                  <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor" class="shrink-0"><path d="M11.944 0A12 12 0 000 12a12 12 0 0012 12 12 12 0 0012-12A12 12 0 0012 0a12 12 0 00-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 01.171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
+                  <span>Telegram</span>
+                </a>
+              </template>
+
+              <!-- Messenger -->
+              <template x-if="hasApp(contact, 'Messenger')">
+                <div class="contact-btn cb-messenger">
+                  <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor" class="shrink-0"><path d="M12 2C6.477 2 2 6.145 2 11.243c0 2.908 1.438 5.504 3.686 7.205V22l3.371-1.851A10.47 10.47 0 0012 20.486c5.523 0 10-4.145 10-9.243S17.523 2 12 2zm1.008 12.457L10.56 12l-4.836 2.457 5.317-5.64 2.447 2.457 4.836-2.457-5.316 5.64z"/></svg>
+                  <span>Messenger</span>
+                </div>
+              </template>
+
+              <!-- Email -->
+              <template x-if="contact.email">
+                <a :href="'mailto:' + contact.email" class="contact-btn cb-email">
+                  <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="shrink-0"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                  <span x-text="contact.email"></span>
+                </a>
+              </template>
+
+              <!-- Localização -->
+              <template x-if="contact.location">
+                <div class="contact-btn cb-location">
+                  <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="shrink-0"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                  <span x-text="contact.location"></span>
+                </div>
+              </template>
+
+            </div>
+          </div>
+        </template>
+
+        <!-- Branding -->
+        <div class="scan-branding">
+          <a href="index.html">
+            <span style="font-size:0.875rem;line-height:1">🏷️</span>
+            <span x-text="$store.i18n.t('view.branding')">Identificado com Tag Pet · nograu.com.br</span>
+          </a>
+        </div>
+
+      </div>
+    </template>
+
+  </div>
+</main>
+
+<script>
+  function petView() {
+    return {
+      loading: true,
+      notFound: false,
+      pet: null,
+      whatsappUrl(phone) {
+        return 'https://wa.me/' + (phone || '').replace(/\D/g, '');
+      },
+      hasApp(contact, app) {
+        return (contact.chatApp || []).includes(app);
+      },
+      async init() {
+        const params = new URLSearchParams(window.location.search);
+        const petId = params.get('id');
+        if (!petId) { this.notFound = true; this.loading = false; return; }
+        try {
+          const res = await fetch(`/pets/pet/${petId}`);
+          if (!res.ok) throw new Error();
+          this.pet = await res.json();
+          document.title = `${this.pet.name} — Nograu`;
+        } catch {
+          this.notFound = true;
+        } finally {
+          this.loading = false;
+        }
+      }
+    }
+  }
+</script>
+
+</body>
+</html>

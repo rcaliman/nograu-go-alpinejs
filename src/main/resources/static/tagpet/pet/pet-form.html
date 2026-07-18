@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cadastrar Pet — Tag Pet — Nograu</title>
+  <meta name="description" content="Cadastre seu pet e gere uma tag com QR Code gratuitamente no Tag Pet.">
+  <meta name="robots" content="noindex, follow">
+  <link rel="icon" type="image/svg+xml" href="../../favicon.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="../../img/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="../../img/favicon-16x16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="../../img/apple-touch-icon.png">
+  <meta name="theme-color" content="#6366f1">
+  <link rel="stylesheet" href="../../theme.css">
+  <link rel="stylesheet" href="../theme.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/intl-tel-input@23/build/css/intlTelInput.css">
+  <script src="https://cdn.jsdelivr.net/npm/intl-tel-input@23/build/js/intlTelInputWithUtils.js"></script>
+  <script src="../i18n.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  <script defer src="/navbar.js"></script>
+</head>
+<body x-data class="page">
+
+<div id="navbar-mount"></div>
+
+<main class="centered-main">
+  <div x-data="petForm()" class="form-page-content">
+
+    <template x-if="notFound">
+      <div class="alert alert-error">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
+        </svg>
+        <span x-text="$store.i18n.t('form.error.notFound')">Pet não encontrado ou link inválido.</span>
+      </div>
+    </template>
+
+    <template x-if="!notFound">
+      <div>
+
+        <!-- Delete modal -->
+        <div x-show="showDeleteModal" class="modal-overlay" @click.self="showDeleteModal = false" @keydown.escape.window="showDeleteModal = false" style="display:none">
+          <div class="modal-box">
+            <h3 class="modal-title" x-text="$store.i18n.t('form.modal.title')">Deletar pet</h3>
+            <div class="modal-body">
+              <span x-text="$store.i18n.t('form.modal.confirm')">Tem certeza que deseja deletar</span>
+              <strong x-text="form.name"></strong>?
+              <span x-text="$store.i18n.t('form.modal.warning')">Esta ação não pode ser desfeita.</span>
+            </div>
+            <div class="modal-actions">
+              <button type="button" class="btn btn-ghost" @click="showDeleteModal = false" x-text="$store.i18n.t('form.modal.cancel')">Cancelar</button>
+              <button type="button" class="btn btn-danger-solid" :disabled="deleting" @click="deletePet()">
+                <span x-show="deleting" class="spinner"></span>
+                <span x-text="$store.i18n.t('form.modal.delete')">Deletar</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Page header -->
+        <div class="flex items-start justify-between gap-3 mb-6">
+          <div>
+            <h1 class="font-bold" style="font-size:1.375rem;margin-bottom:0.25rem"
+                x-text="isEdit ? $store.i18n.t('form.editTitle') : $store.i18n.t('form.createTitle')">Cadastrar Pet</h1>
+            <p class="text-muted text-sm"
+               x-text="isEdit ? $store.i18n.t('form.editSubtitle') : $store.i18n.t('form.createSubtitle')"></p>
+          </div>
+          <template x-if="isEdit">
+            <button type="button" class="btn btn-sm btn-danger shrink-0" @click="showDeleteModal = true">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="3 6 5 6 21 6"/>
+                <path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/>
+                <path d="M10 11v6M14 11v6"/>
+                <path d="M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2"/>
+              </svg>
+              <span x-text="$store.i18n.t('form.deleteBtn')">Deletar pet</span>
+            </button>
+          </template>
+        </div>
+
+        <form @submit.prevent="submitForm" class="flex flex-col gap-4">
+
+          <!-- Como funciona -->
+          <template x-if="!isEdit">
+            <div class="card">
+              <div class="card-body">
+                <div class="card-heading mb-2" style="text-align:center">Como funciona</div>
+                <div>
+                  <div class="tagpet-list-row">
+                    <span class="tagpet-list-num">1</span>
+                    <span class="flex-1" style="font-size:0.8125rem;color:var(--text);line-height:1.5">Cadastre seu pet ou o pet comunitário que você ame e os dados de contato.</span>
+                  </div>
+                  <div class="tagpet-list-row">
+                    <span class="tagpet-list-num">2</span>
+                    <span class="flex-1" style="font-size:0.8125rem;color:var(--text);line-height:1.5">Imprima, recorte e plastifique as etiquetas geradas.</span>
+                  </div>
+                  <div class="tagpet-list-row">
+                    <span class="tagpet-list-num">3</span>
+                    <span class="flex-1" style="font-size:0.8125rem;color:var(--text);line-height:1.5">Pendure na coleira para que seu amigo não se perca.</span>
+                  </div>
+                </div>
+                <div style="display:flex;justify-content:center;margin-top:0.875rem">
+                  <svg style="width:5.25rem;height:5.75rem" viewBox="0 0 120 132" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                    <!-- string loop -->
+                    <circle cx="60" cy="14" r="8" fill="none" stroke="var(--subtle)" stroke-width="3"/>
+                    <!-- tag body -->
+                    <rect x="15" y="20" width="90" height="100" rx="10" fill="var(--surface)" stroke="var(--border)" stroke-width="2"/>
+                    <!-- hole -->
+                    <circle cx="60" cy="20" r="4" fill="var(--bg)" stroke="var(--border)" stroke-width="1.5"/>
+                    <!-- QR finder patterns -->
+                    <g fill="var(--text)">
+                      <path d="M30 34h16v16H30z"/>
+                      <path d="M34 38h8v8h-8z" fill="var(--surface)"/>
+                      <path d="M36.5 40.5h3v3h-3z" fill="var(--text)"/>
+                      <path d="M74 34h16v16H74z"/>
+                      <path d="M78 38h8v8h-8z" fill="var(--surface)"/>
+                      <path d="M80.5 40.5h3v3h-3z" fill="var(--text)"/>
+                      <path d="M30 78h16v16H30z"/>
+                      <path d="M34 82h8v8h-8z" fill="var(--surface)"/>
+                      <path d="M36.5 84.5h3v3h-3z" fill="var(--text)"/>
+                    </g>
+                    <!-- QR data modules -->
+                    <g fill="var(--text)">
+                      <path d="M52 34h5v5h-5zM60 34h5v5h-5zM52 42h5v5h-5zM66 42h5v5h-5zM52 50h5v5h-5zM60 50h5v5h-5zM74 54h5v5h-5zM82 54h5v5h-5zM30 58h5v5h-5zM40 58h5v5h-5zM52 58h5v5h-5zM60 62h5v5h-5zM68 62h5v5h-5zM86 62h5v5h-5zM52 70h5v5h-5zM74 70h5v5h-5zM82 70h5v5h-5zM52 78h5v5h-5zM60 82h5v5h-5zM68 86h5v5h-5zM76 82h5v5h-5zM86 86h5v5h-5z"/>
+                    </g>
+                    <!-- label lines -->
+                    <rect x="40" y="102" width="40" height="4" rx="2" fill="var(--muted)"/>
+                    <rect x="46" y="110" width="28" height="4" rx="2" fill="var(--border)"/>
+                  </svg>
+                </div>
+              </div>
+            </div>
+          </template>
+
+          <!-- Dados do Pet -->
+          <div class="card">
+            <div class="card-body flex flex-col gap-4">
+              <div class="card-heading" x-text="$store.i18n.t('section.petData')">Dados do Pet</div>
+
+              <div class="form-group">
+                <label class="form-label" x-text="$store.i18n.t('label.name')">Nome</label>
+                <input type="text" x-model="form.name"
+                  :placeholder="$store.i18n.t('form.namePlaceholder')"
+                  class="form-input" required>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" x-text="$store.i18n.t('label.type')">Tipo</label>
+                <input type="text" x-model="form.type"
+                  :placeholder="$store.i18n.t('form.typePlaceholder')"
+                  class="form-input" required>
+              </div>
+
+              <label class="check-wrap">
+                <input type="checkbox" x-model="form.isCommunity">
+                <span class="check-label" x-text="$store.i18n.t('form.communityLabel')">Pet comunitário</span>
+              </label>
+
+              <div class="form-group">
+                <label class="form-label" x-text="$store.i18n.t('label.moreInfo')">Informações adicionais</label>
+                <textarea x-model="form.moreInfo"
+                  :placeholder="$store.i18n.t('form.moreInfoPlaceholder')"
+                  class="form-input" rows="3"></textarea>
+              </div>
+            </div>
+          </div>
+
+          <!-- Contatos -->
+          <div class="card">
+            <div class="card-body flex flex-col gap-4">
+              <div class="flex items-center justify-between">
+                <div class="card-heading" x-text="$store.i18n.t('section.contacts')">Contatos</div>
+                <button type="button" @click="addContact" class="btn btn-sm btn-primary-ghost"
+                    x-text="$store.i18n.t('form.contacts.add')">+ Adicionar</button>
+              </div>
+
+              <template x-if="form.contacts.length === 0">
+                <p class="text-center text-muted text-sm" style="padding:0.75rem 0"
+                   x-text="$store.i18n.t('form.contacts.empty')">Nenhum contato adicionado.</p>
+              </template>
+
+              <template x-for="(contact, index) in form.contacts" :key="index">
+                <div class="flex flex-col gap-3" style="padding-top:1rem;border-top:1px solid var(--border)">
+
+                  <div class="flex items-center justify-between">
+                    <span class="section-label" x-text="`${$store.i18n.t('label.contact')} ${index + 1}`"></span>
+                    <button type="button" @click="removeContact(index)" class="btn btn-sm btn-ghost text-error"
+                        x-text="$store.i18n.t('form.contacts.remove')">Remover</button>
+                  </div>
+
+                  <div class="form-group">
+                    <label class="form-label" x-text="$store.i18n.t('label.name')">Nome</label>
+                    <input type="text" x-model="contact.name"
+                      :placeholder="$store.i18n.t('form.contacts.namePlaceholder')"
+                      class="form-input">
+                  </div>
+
+                  <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem">
+                    <div class="form-group">
+                      <label class="form-label" x-text="$store.i18n.t('label.phone')">Telefone</label>
+                      <input type="tel"
+                        x-init="$nextTick(() => initPhoneInput($el, contact))"
+                        class="form-input">
+                    </div>
+                    <div class="form-group">
+                      <label class="form-label" x-text="$store.i18n.t('label.email')">E-mail</label>
+                      <input type="email" x-model="contact.email"
+                        :placeholder="$store.i18n.t('label.email')"
+                        class="form-input"
+                        :class="contact.email && !isValidEmail(contact.email) ? 'is-error' : ''">
+                    </div>
+                  </div>
+
+                  <div class="form-group">
+                    <label class="form-label" x-text="$store.i18n.t('label.location')">Localização</label>
+                    <input type="text" x-model="contact.location"
+                      :placeholder="$store.i18n.t('label.location')"
+                      class="form-input">
+                  </div>
+
+                  <div class="form-group">
+                    <label class="form-label" x-text="$store.i18n.t('form.contacts.chatApps')">Apps de chat</label>
+                    <div class="flex gap-4" style="flex-wrap:wrap;margin-top:0.125rem">
+                      <template x-for="app in ['WhatsApp', 'Telegram', 'Messenger']" :key="app">
+                        <label class="check-wrap">
+                          <input type="checkbox"
+                            :checked="contact.chatApp.includes(app)"
+                            @change="contact.chatApp.includes(app)
+                              ? contact.chatApp.splice(contact.chatApp.indexOf(app), 1)
+                              : contact.chatApp.push(app)">
+                          <span class="check-label" x-text="app"></span>
+                        </label>
+                      </template>
+                    </div>
+                  </div>
+
+                </div>
+              </template>
+            </div>
+          </div>
+
+          <!-- Error -->
+          <template x-if="error">
+            <div class="alert alert-error">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
+              </svg>
+              <span x-text="error"></span>
+            </div>
+          </template>
+
+          <button type="submit" class="btn btn-primary btn-full" style="padding:0.6875rem" :disabled="loading">
+            <span x-show="loading" class="spinner"></span>
+            <span x-text="loading
+              ? (isEdit ? $store.i18n.t('form.submit.editing') : $store.i18n.t('form.submit.creating'))
+              : (isEdit ? $store.i18n.t('form.submit.edit') : $store.i18n.t('form.submit.create'))"></span>
+          </button>
+
+        </form>
+      </div>
+    </template>
+
+  </div>
+</main>
+
+<script>
+  function petForm() {
+    return {
+      loading: false,
+      deleting: false,
+      error: '',
+      notFound: false,
+      isEdit: false,
+      petId: null,
+      secret: null,
+      showDeleteModal: false,
+      form: {
+        name: '',
+        type: '',
+        isCommunity: false,
+        moreInfo: '',
+        contacts: []
+      },
+      async init() {
+        const params = new URLSearchParams(window.location.search);
+        this.petId = params.get('id');
+        this.secret = params.get('secret');
+        this.isEdit = !!(this.petId && this.secret);
+
+        const t = key => window.Alpine?.store('i18n')?.t(key) ?? key;
+        document.title = (this.isEdit ? t('form.editTitle') : t('form.createTitle')) + ' — Nograu';
+
+        if (!this.isEdit) return;
+
+        try {
+          const res = await fetch(`/pets/${this.petId}`);
+          if (!res.ok) throw new Error();
+          const pet = await res.json();
+          this.form = {
+            name: pet.name ?? '',
+            type: pet.type ?? '',
+            isCommunity: pet.isCommunity ?? false,
+            moreInfo: pet.moreInfo ?? '',
+            contacts: (pet.contacts ?? []).map(c => ({
+              name: c.name ?? '',
+              contactNumber: c.contactNumber ?? '',
+              email: c.email ?? '',
+              location: c.location ?? '',
+              chatApp: c.chatApp ?? []
+            }))
+          };
+        } catch {
+          this.notFound = true;
+        }
+      },
+      initPhoneInput(el, contact) {
+        const existing = intlTelInput.getInstance(el);
+        if (existing) existing.destroy();
+        const iti = intlTelInput(el, {
+          initialCountry: 'br',
+          preferredCountries: ['br', 'pt', 'us'],
+          separateDialCode: true,
+        });
+        contact._iti = iti;
+        if (contact.contactNumber) iti.setNumber(contact.contactNumber);
+      },
+      isValidEmail(email) {
+        return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+      },
+      addContact() {
+        this.form.contacts.push({ name: '', contactNumber: '', email: '', location: '', chatApp: [] });
+      },
+      removeContact(index) {
+        this.form.contacts.splice(index, 1);
+      },
+      async deletePet() {
+        this.deleting = true;
+        try {
+          const res = await fetch(`/pets/${this.petId}?secret=${encodeURIComponent(this.secret)}`, {
+            method: 'DELETE'
+          });
+          if (!res.ok) throw new Error();
+          this.showDeleteModal = false;
+          window.location.href = 'index.html?deleted=true';
+        } catch {
+          alert('Erro ao deletar o pet. Verifique se o código secreto está correto.');
+        } finally {
+          this.deleting = false;
+        }
+      },
+      async submitForm() {
+        this.loading = true;
+        this.error = '';
+        try {
+          const url = this.isEdit
+            ? `/pets/${this.petId}?secret=${encodeURIComponent(this.secret)}`
+            : '/pets';
+          const res = await fetch(url, {
+            method: this.isEdit ? 'PUT' : 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Accept-Language': window.Alpine?.store('i18n')?.current ?? 'pt-BR'
+            },
+            body: JSON.stringify({
+              ...this.form,
+              contacts: this.form.contacts.map(({ _iti, ...rest }) => ({
+                ...rest,
+                contactNumber: _iti ? (_iti.getNumber() || rest.contactNumber) : rest.contactNumber
+              }))
+            })
+          });
+          if (!res.ok) throw new Error(`Erro ${res.status}`);
+          if (this.isEdit) {
+            const sp = this.secret ? `&secret=${encodeURIComponent(this.secret)}` : '';
+            window.location.href = `pet-data.html?id=${this.petId}${sp}`;
+          } else {
+            const pet = await res.json();
+            const secretParam = pet.secret ? `&secret=${encodeURIComponent(pet.secret)}` : '';
+            window.location.href = `pet-data.html?id=${pet.id}${secretParam}`;
+          }
+        } catch (e) {
+          this.error = e.message;
+          this.loading = false;
+        }
+      }
+    }
+  }
+</script>
+
+</body>
+</html>

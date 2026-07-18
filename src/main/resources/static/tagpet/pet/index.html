@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Como Identificar seu Pet com QR Code — Tag Pet Nograu</title>
+  <meta name="description" content="Gere tags com QR Code para identificar os pets que você ama. Imprima, plastifique e prenda na coleira — grátis, sem app, sem cadastro.">
+  <meta name="keywords" content="como identificar meu pet, tag qr code para coleira, identificação de pet perdido, gerar qr code pet, plaquinha de identificação para cachorro e gato">
+  <meta name="robots" content="index, follow">
+  <meta name="googlebot" content="index, follow">
+  <link rel="canonical" href="https://www.nograu.com.br/tagpet/pet">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://www.nograu.com.br/tagpet/pet">
+  <meta property="og:title" content="Como Identificar seu Pet com QR Code — Tag Pet Nograu">
+  <meta property="og:description" content="Gere tags com QR Code para identificar os pets que você ama. Imprima, plastifique e prenda na coleira — grátis, sem app, sem cadastro.">
+  <meta property="og:locale" content="pt_BR">
+  <meta property="og:site_name" content="Nograu">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Como Identificar seu Pet com QR Code — Tag Pet Nograu">
+  <meta name="twitter:description" content="Gere tags com QR Code para identificar os pets que você ama. Imprima, plastifique e prenda na coleira — grátis, sem app, sem cadastro.">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Tag Pet — Como Identificar seu Pet com QR Code",
+    "url": "https://www.nograu.com.br/tagpet/pet",
+    "description": "Gere tags com QR Code para identificar os pets que você ama. Cadastre o pet e os contatos, gere o QR Code automaticamente e imprima a etiqueta para prender na coleira.",
+    "applicationCategory": "UtilitiesApplication",
+    "operatingSystem": "Todos os dispositivos",
+    "inLanguage": "pt-BR",
+    "isAccessibleForFree": true,
+    "keywords": "como identificar meu pet, tag qr code para coleira, identificação de pet perdido, gerar qr code pet",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "BRL" }
+  }
+  </script>
+
+  <link rel="icon" type="image/svg+xml" href="../../favicon.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="../../img/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="../../img/favicon-16x16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="../../img/apple-touch-icon.png">
+  <meta name="theme-color" content="#6366f1">
+  <link rel="stylesheet" href="../../theme.css">
+  <link rel="stylesheet" href="../theme.css">
+  <script src="../i18n.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  <script defer src="/navbar.js"></script>
+</head>
+<body x-data class="page">
+
+<div id="navbar-mount"></div>
+
+<div id="deleted-alert" class="hidden" style="max-width:60rem;margin:0 auto;padding:1rem 1.5rem 0">
+  <div class="alert alert-success">
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 20 20" fill="currentColor">
+      <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+    </svg>
+    <span x-text="$store.i18n.t('index.deleted')">Pet deletado com sucesso.</span>
+  </div>
+</div>
+<script>
+  if (new URLSearchParams(window.location.search).get('deleted') === 'true') {
+    document.getElementById('deleted-alert').classList.remove('hidden');
+    history.replaceState(null, '', window.location.pathname);
+  }
+</script>
+
+<main class="centered-main">
+  <div class="form-page-content">
+
+    <p class="page-title" x-text="$store.i18n.t('index.hero.title') + ' ' + $store.i18n.t('index.hero.subtitle')">Identifique seu pet com QR Code</p>
+    <p class="page-subtitle" x-text="$store.i18n.t('index.hero.desc')">
+      Gere uma tag com QR Code, imprima e plastifique. Se o seu pet se perder, qualquer pessoa com smartphone consegue ver seus contatos na hora.
+    </p>
+
+    <a href="pet-form.html" class="btn btn-primary btn-full mb-6" style="padding:0.6875rem">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 5v14M5 12h14"/>
+      </svg>
+      <span x-text="$store.i18n.t('index.hero.cta')">Criar QR Code grátis</span>
+    </a>
+
+    <p class="page-title mt-4" x-text="$store.i18n.t('index.how.title')">Como funciona</p>
+    <p class="page-subtitle" x-text="$store.i18n.t('index.how.subtitle')">Três passos simples para proteger o seu pet</p>
+
+    <div class="card">
+      <div class="card-body" style="padding-top:0.25rem;padding-bottom:0.25rem">
+
+        <div class="tagpet-list-row">
+          <span class="tagpet-list-num">1</span>
+          <span class="flex-1">
+            <span class="tagpet-list-title" x-text="$store.i18n.t('index.how.step1.title')">Cadastre o pet</span>
+            <span class="tagpet-list-desc" x-text="$store.i18n.t('index.how.step1.desc')">Informe o nome, tipo e os contatos dos responsáveis. Leva menos de 2 minutos.</span>
+          </span>
+        </div>
+
+        <div class="tagpet-list-row">
+          <span class="tagpet-list-num">2</span>
+          <span class="flex-1">
+            <span class="tagpet-list-title" x-text="$store.i18n.t('index.how.step2.title')">Gere o QR Code</span>
+            <span class="tagpet-list-desc" x-text="$store.i18n.t('index.how.step2.desc')">Um QR Code exclusivo é gerado automaticamente e vinculado às informações do pet.</span>
+          </span>
+        </div>
+
+        <div class="tagpet-list-row">
+          <span class="tagpet-list-num">3</span>
+          <span class="flex-1">
+            <span class="tagpet-list-title" x-text="$store.i18n.t('index.how.step3.title')">Imprima e plastifique</span>
+            <span class="tagpet-list-desc" x-text="$store.i18n.t('index.how.step3.desc')">Imprima a tag, plastifique e prenda na coleira. Pronto — o pet está identificado.</span>
+          </span>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="container text-center text-xs text-subtle">
+    <span x-text="$store.i18n.t('index.footer')">Identifique seu pet com carinho e tecnologia.</span>
+  </div>
+</footer>
+
+</body>
+</html>

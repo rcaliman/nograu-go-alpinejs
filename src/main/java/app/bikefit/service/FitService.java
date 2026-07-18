@@ -5,8 +5,12 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.server.ResponseStatusException;
 
 import app.bikefit.dto.FitDtoResponse;
 import app.bikefit.model.Fit;
@@ -20,6 +24,7 @@ import lombok.RequiredArgsConstructor;
 public class FitService {
 
     private final FitRepository fitRepository;
+    private final MessageSource messageSource;
 
     @Transactional
     public FitDtoResponse calculate(Fit fit) {
@@ -32,13 +37,18 @@ public class FitService {
 
     public FitDtoResponse view(UUID id) {
         Optional<Fit> fit = fitRepository.findById(id);
-        return fit.map(FitDtoResponse::dtoResponse).orElseThrow(() -> new RuntimeException("Fit não encontrado"));
+        return fit.map(FitDtoResponse::dtoResponse).orElseThrow(() -> naoEncontrado());
     }
 
     public List<FitDtoResponse> findByEmail(@RequestParam String email) {
         var fits = fitRepository.findAllByEmailOrderByCreatedAtDesc(email)
-                .orElseThrow(() -> new RuntimeException("Fit não encontrado"));
+                .orElseThrow(() -> naoEncontrado());
         return fits.stream().map(FitDtoResponse::dtoResponse).toList();
+    }
+
+    private ResponseStatusException naoEncontrado() {
+        return new ResponseStatusException(HttpStatus.NOT_FOUND,
+                messageSource.getMessage("fit.erro.naoEncontrado", null, LocaleContextHolder.getLocale()));
     }
 
     public long qtdCalculosHoje() {

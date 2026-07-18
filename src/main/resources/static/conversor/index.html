@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Conversor de Medidas Online Grátis — Nograu</title>
+  <meta name="description"
+    content="Converta unidades de comprimento, volume, massa, área e velocidade online e grátis. Ferramenta simples e rápida, sem necessidade de cadastro." />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://www.nograu.com.br/conversor" />
+
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Nograu" />
+  <meta property="og:title" content="Conversor de Medidas Online Grátis — Nograu" />
+  <meta property="og:description"
+    content="Converta unidades de comprimento, volume, massa, área e velocidade online e grátis. Ferramenta simples e rápida, sem necessidade de cadastro." />
+  <meta property="og:url" content="https://www.nograu.com.br/conversor" />
+  <meta property="og:locale" content="pt_BR" />
+  <meta property="og:image" content="https://www.nograu.com.br/img/og-image.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="Nograu — Calculadoras gratuitas online" />
+
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Conversor de Medidas Online Grátis — Nograu" />
+  <meta name="twitter:description"
+    content="Converta unidades de comprimento, volume, massa, área e velocidade online e grátis." />
+  <meta name="twitter:image" content="https://www.nograu.com.br/img/og-image.png" />
+  <meta name="twitter:image:alt" content="Nograu — Calculadoras gratuitas online" />
+
+  <link rel="icon" type="image/svg+xml" href="../favicon.svg" />
+  <link rel="icon" type="image/png" sizes="32x32" href="../img/favicon-32x32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="../img/favicon-16x16.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="../img/apple-touch-icon.png" />
+  <meta name="theme-color" content="#6366f1" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" />
+  <link rel="stylesheet" href="../theme.css" />
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Conversor de Medidas — Nograu",
+    "url": "https://www.nograu.com.br/conversor",
+    "description": "Conversor de unidades de comprimento, volume, massa, área e velocidade entre sistemas métrico e imperial.",
+    "applicationCategory": "UtilitiesApplication",
+    "operatingSystem": "Todos os dispositivos",
+    "inLanguage": "pt-BR",
+    "isAccessibleForFree": true,
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "BRL" }
+  }
+  </script>
+
+  <script defer src="/conversor/conversor.js"></script>
+  <script defer src="/navbar.js"></script>
+</head>
+
+<body class="page">
+
+  <div id="navbar-mount"></div>
+
+  <main class="centered-main">
+    <div class="form-page-content">
+
+      <p class="page-title" data-i18n="conv.title">Conversor de Medidas</p>
+      <p class="page-subtitle" data-i18n="conv.subtitle">Converta unidades entre diferentes sistemas de medida: comprimento, volume, massa, área e velocidade.</p>
+
+      <div class="card">
+        <div class="card-body">
+
+          <div class="section-divider"><span data-i18n="conv.sectionTitle">Conversor</span></div>
+
+          <div class="conv-tabs" role="tablist" id="conv-tabs">
+            <button type="button" class="conv-tab conv-tab-active" role="tab" aria-selected="true"
+              data-tab="comprimento" data-i18n="tab.comprimento">Comprimento</button>
+            <button type="button" class="conv-tab" role="tab" aria-selected="false" data-tab="volume"
+              data-i18n="tab.volume">Volume</button>
+            <button type="button" class="conv-tab" role="tab" aria-selected="false" data-tab="massa"
+              data-i18n="tab.massa">Massa</button>
+            <button type="button" class="conv-tab" role="tab" aria-selected="false" data-tab="area"
+              data-i18n="tab.area">Área</button>
+            <button type="button" class="conv-tab" role="tab" aria-selected="false" data-tab="velocidade"
+              data-i18n="tab.velocidade">Velocidade</button>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" data-i18n="converter.value">Valor</label>
+            <input type="number" class="form-input" id="conv-value" data-i18n-placeholder="converter.valuePlaceholder"
+              placeholder="Digite o valor" inputmode="decimal" step="any" />
+          </div>
+
+          <div class="conv-units-row mt-4">
+            <div class="form-group" style="flex:1;min-width:0">
+              <label class="form-label" data-i18n="converter.from">De</label>
+              <select class="form-input" id="conv-from"></select>
+            </div>
+            <button type="button" class="conv-swap-btn" id="conv-swap" data-i18n-aria-label="converter.swap"
+              aria-label="Inverter unidades">⇄</button>
+            <div class="form-group" style="flex:1;min-width:0">
+              <label class="form-label" data-i18n="converter.to">Para</label>
+              <select class="form-input" id="conv-to"></select>
+            </div>
+          </div>
+
+          <div class="form-group mt-4">
+            <label class="form-label" data-i18n="converter.result">Resultado</label>
+            <input type="text" class="form-input conv-result-input" id="conv-result" readonly placeholder="—" />
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container text-center text-xs text-subtle">
+      <span data-i18n="footer.text">Conversor de Medidas — comprimento, volume, massa, área e velocidade</span>
+    </div>
+  </footer>
+
+</body>
+
+</html>

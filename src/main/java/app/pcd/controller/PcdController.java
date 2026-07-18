@@ -17,6 +17,7 @@ import app.pcd.model.Banco;
 import app.pcd.service.BancoService;
 import app.pcd.service.CalculoEmprestimoService;
 import app.pcd.service.FileDownloadService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -35,7 +36,7 @@ public class PcdController {
     }
 
     @PostMapping("calculo")
-    public ResponseEntity<CalculoEmprestimoDtoResponse> calcular(@RequestBody CalculoEmprestimoDtoRequest request) {
+    public ResponseEntity<CalculoEmprestimoDtoResponse> calcular(@Valid @RequestBody CalculoEmprestimoDtoRequest request) {
         var calculo = calculoEmprestimoService.calcular(request.toModel());
         return ResponseEntity.ok(CalculoEmprestimoDtoResponse.from(calculo));
     }
