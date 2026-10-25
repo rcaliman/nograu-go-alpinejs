@@ -1,0 +1,12 @@
+# Mescle estas propriedades ao application.properties externo do Raspberry.
+# Preserve as propriedades do banco, da porta e de nograu.base-url.
+# O domínio nograu.com.br deve estar VERIFICADO na conta Resend.
+# Crie uma nova chave de envio no Resend e configure-a apenas no Raspberry,
+# preferencialmente na variável SPRING_MAIL_PASSWORD.
+# Não coloque a chave no repositório nem no executável.
+spring.mail.host=smtp.resend.com
+spring.mail.port=587
+spring.mail.username=resend
+spring.mail.properties.mail.smtp.auth=true
+spring.mail.properties.mail.smtp.starttls.enable=true
+nograu.mail.from=No Grau <nograu@nograu.com.br>

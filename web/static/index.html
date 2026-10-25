@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Nograu — Calculadoras Grátis: Bike Fit e Conversor de Medidas</title>
+  <meta name="description"
+    content="Ferramentas gratuitas e sem cadastro: calcule seu bike fit (tamanho de quadro road e MTB, altura do selim) e converta medidas de bicicleta entre métrico e imperial. Conheça também a calculadora de empréstimo consignado da Nograu, com taxa de juros e saldo devedor." />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://www.nograu.com.br" />
+
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Nograu" />
+  <meta property="og:title" content="Nograu — Calculadoras Grátis: Bike Fit e Conversor de Medidas" />
+  <meta property="og:description"
+    content="Ferramentas gratuitas e sem cadastro: calcule seu bike fit (tamanho de quadro road e MTB, altura do selim) e converta medidas de bicicleta entre métrico e imperial. Conheça também a calculadora de empréstimo consignado da Nograu, com taxa de juros e saldo devedor." />
+  <meta property="og:url" content="https://www.nograu.com.br" />
+  <meta property="og:locale" content="pt_BR" />
+  <meta property="og:image" content="https://www.nograu.com.br/img/og-image.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="Nograu — Calculadoras gratuitas online" />
+
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Nograu — Calculadoras Grátis: Bike Fit e Conversor de Medidas" />
+  <meta name="twitter:description"
+    content="Ferramentas gratuitas e sem cadastro: calcule seu bike fit (tamanho de quadro road e MTB, altura do selim) e converta medidas de bicicleta entre métrico e imperial. Conheça também a calculadora de empréstimo consignado da Nograu." />
+  <meta name="twitter:image" content="https://www.nograu.com.br/img/og-image.png" />
+  <meta name="twitter:image:alt" content="Nograu — Calculadoras gratuitas online" />
+
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+  <link rel="icon" type="image/png" sizes="32x32" href="img/favicon-32x32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="img/favicon-16x16.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="img/apple-touch-icon.png" />
+  <meta name="theme-color" content="#6366f1" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" />
+  <link rel="stylesheet" href="theme.css" />
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Calculadora de Bike Fit — Nograu",
+    "url": "https://www.nograu.com.br",
+    "description": "Calculadora de bike fit que determina o tamanho ideal de quadro road e MTB, altura do selim e top tube efetivo com base em medidas corporais. Parte da Nograu, plataforma de calculadoras gratuitas que também inclui simulador de empréstimo consignado.",
+    "applicationCategory": "SportsApplication",
+    "operatingSystem": "Todos os dispositivos",
+    "inLanguage": "pt-BR",
+    "isAccessibleForFree": true,
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "BRL" }
+  }
+  </script>
+
+  <script defer src="app.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.8/dist/cdn.min.js"></script>
+  <script defer src="/navbar.js"></script>
+</head>
+
+<body class="page" x-data="appData()" @keydown.escape.window="historicoOpen = false">
+
+  <div id="navbar-mount"></div>
+
+  <main class="centered-main">
+    <div class="form-page-content">
+
+      <p class="page-title" x-text="t('hero.title')"></p>
+      <p class="page-subtitle" x-text="t('hero.subtitle')"></p>
+
+      <div class="card">
+        <div class="card-body">
+
+          <a href="#" class="history-link" @click.prevent="historicoOpen = true; $nextTick(() => $refs.histEmail && $refs.histEmail.focus())"
+            x-text="t('nav.history')"></a>
+
+          <form @submit.prevent="submitFit()" novalidate>
+
+            <div class="section-divider"><span x-text="t('form.sectionMeasures')"></span></div>
+
+            <div class="measures-grid">
+
+              <div class="form-group measure-field">
+                <label class="form-label" for="cavalo" x-text="t('form.cavalo.label')"></label>
+                <div class="measure-img-wrap">
+                  <img class="measure-img" src="img/form-cavalo.svg" :alt="t('form.cavalo.imgAlt')" />
+                </div>
+                <input class="form-input" type="number" id="cavalo" name="cavalo" x-model="fitCavalo"
+                  :placeholder="t('form.cavalo.placeholder')" min="60" max="115" step="0.1" required inputmode="decimal" />
+                <ul class="form-hint">
+                  <li x-text="t('form.cavalo.hint1')"></li>
+                  <li x-text="t('form.cavalo.hint2')"></li>
+                  <li x-text="t('form.cavalo.hint3')"></li>
+                  <li x-text="t('form.cavalo.hint4')"></li>
+                </ul>
+              </div>
+
+              <div class="form-group measure-field">
+                <label class="form-label" for="esterno" x-text="t('form.esterno.label')"></label>
+                <div class="measure-img-wrap">
+                  <img class="measure-img" src="img/form-esterno.svg" :alt="t('form.esterno.imgAlt')" />
+                </div>
+                <input class="form-input" type="number" id="esterno" name="esterno" x-model="fitEsterno"
+                  :placeholder="t('form.esterno.placeholder')" min="45" max="165" step="0.1" required inputmode="decimal" />
+                <ul class="form-hint">
+                  <li x-text="t('form.esterno.hint1')"></li>
+                  <li x-text="t('form.esterno.hint2')"></li>
+                  <li x-text="t('form.esterno.hint3')"></li>
+                </ul>
+              </div>
+
+              <div class="form-group measure-field">
+                <label class="form-label" for="braco" x-text="t('form.braco.label')"></label>
+                <div class="measure-img-wrap">
+                  <img class="measure-img" src="img/form-braco.svg" :alt="t('form.braco.imgAlt')" />
+                </div>
+                <input class="form-input" type="number" id="braco" name="braco" x-model="fitBraco"
+                  :placeholder="t('form.braco.placeholder')" min="40" max="100" step="0.1" required inputmode="decimal" />
+                <ul class="form-hint">
+                  <li x-text="t('form.braco.hint1')"></li>
+                  <li x-text="t('form.braco.hint2')"></li>
+                  <li x-text="t('form.braco.hint3')"></li>
+                </ul>
+              </div>
+
+            </div>
+
+            <div class="form-group email-group">
+              <label class="form-label" for="email">E-mail</label>
+              <input class="form-input" type="email" id="email" name="email" x-model="fitEmail"
+                placeholder="seu@email.com" required inputmode="email" />
+              <p class="form-hint" x-text="t('form.email.hint')"></p>
+            </div>
+
+            <div x-show="fitError" class="alert alert-error mt-4" role="alert">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10" />
+                <line x1="12" y1="8" x2="12" y2="12" />
+                <line x1="12" y1="16" x2="12.01" y2="16" />
+              </svg>
+              <span x-text="fitError"></span>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-full mt-4" :disabled="fitLoading">
+              <span x-text="fitLoading ? t('btn.calculating') : t('btn.calculate')"></span>
+              <span class="spinner" x-show="fitLoading"></span>
+            </button>
+
+          </form>
+
+          <div id="result-section" x-show="fitResult" role="region" aria-live="polite">
+            <div class="section-divider"><span x-text="t('result.title')"></span></div>
+
+            <div class="result-grid">
+
+              <div class="result-tile">
+                <img class="result-tile-image" src="img/result-quadro-speed.svg" :alt="t('result.speedFrame.label')" />
+                <span class="result-tile-label" x-text="t('result.speedFrame.label')"></span>
+                <span class="result-tile-value" x-text="fitResult ? fmt(fitResult.quadroSpeed) : '—'"></span>
+                <span class="result-tile-unit">cm</span>
+                <span class="result-tile-description" x-text="t('result.speedFrame.description')"></span>
+              </div>
+
+              <div class="result-tile">
+                <img class="result-tile-image" src="img/result-quadro-mtb.svg" :alt="t('result.mtbFrame.label')" />
+                <span class="result-tile-label" x-text="t('result.mtbFrame.label')"></span>
+                <span class="result-tile-value" x-text="fitResult ? fmt(fitResult.quadroMtb) : '—'"></span>
+                <span class="result-tile-unit" x-text="t('result.mtbFrame.unit')"></span>
+                <span class="result-tile-description" x-text="t('result.mtbFrame.description')"></span>
+              </div>
+
+              <div class="result-tile">
+                <img class="result-tile-image" src="img/result-altura-selim.svg" :alt="t('result.saddleHeight.label')" />
+                <span class="result-tile-label" x-text="t('result.saddleHeight.label')"></span>
+                <span class="result-tile-value" x-text="fitResult ? fmt(fitResult.alturaSelim) : '—'"></span>
+                <span class="result-tile-unit">cm</span>
+                <span class="result-tile-description" x-text="t('result.saddleHeight.description')"></span>
+              </div>
+
+              <div class="result-tile">
+                <img class="result-tile-image" src="img/result-top-tube.svg" :alt="t('result.topTube.label')" />
+                <span class="result-tile-label" x-text="t('result.topTube.label')"></span>
+                <span class="result-tile-value" x-text="fitResult ? fmt(fitResult.topTubeEfetivo) : '—'"></span>
+                <span class="result-tile-unit">cm</span>
+                <span class="result-tile-description" x-text="t('result.topTube.description')"></span>
+              </div>
+
+            </div>
+
+            <div class="alert alert-success mt-4" role="alert">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                <polyline points="22 4 12 14.01 9 11.01" />
+              </svg>
+              <div class="alert-body">
+                <strong x-text="t('result.important.title')"></strong>
+                <p x-text="t('result.important.text1')"></p>
+                <p><em x-text="t('result.important.text2')"></em></p>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="card mt-4">
+        <div class="card-body">
+          <div class="section-divider"><span x-text="t('mural.title')"></span></div>
+
+          <div id="mural-lista">
+            <p class="mural-empty" x-show="muralLoading" x-text="t('mural.loading')"></p>
+            <p class="mural-empty" x-show="!muralLoading && !muralLoadError && muralMessages.length === 0"
+              x-text="t('mural.empty')"></p>
+            <p class="mural-error-text" x-show="muralLoadError" x-text="t('mural.loadError')"></p>
+            <template x-for="m in muralMessages" :key="m.id">
+              <div class="mural-item">
+                <div class="mural-item-header">
+                  <span class="mural-item-nome" x-text="m.nome"></span>
+                  <span class="mural-item-data" x-text="fmtMuralDate(m.createdAt)"></span>
+                </div>
+                <p class="mural-item-resposta" x-show="m.idResposta && muralRespostas[m.idResposta]">
+                  <span x-text="t('mural.replyingToInline')"></span> <strong x-text="muralRespostas[m.idResposta]?.nome"></strong>
+                </p>
+                <p class="mural-item-texto" x-text="m.mensagem"></p>
+                <div class="mural-item-actions">
+                  <button type="button" class="mural-like-btn" :class="{ 'is-liked': m.curtida }"
+                    @click="alternarLike(m)" :aria-busy="m.likeLoading"
+                    :aria-pressed="m.curtida" :aria-label="m.curtida ? t('mural.unlike') : t('mural.like')">
+                    <svg width="15" height="15" viewBox="0 0 24 24" :fill="m.curtida ? 'currentColor' : 'none'"
+                      stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                      aria-hidden="true">
+                      <path d="M7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3M7 22V11l5-9a3 3 0 0 1 3 3v4h4.7a2 2 0 0 1 2 2.3l-1.4 9a2 2 0 0 1-2 1.7H7Z" />
+                    </svg>
+                    <span x-text="m.totalLikes || 0"></span>
+                  </button>
+                  <a href="#mural-form" class="mural-responder-link" x-text="t('mural.replyLink')"
+                    @click.prevent="responder(m)"></a>
+                </div>
+              </div>
+            </template>
+          </div>
+
+          <div class="mural-paginacao" x-show="muralTotalPages > 1">
+            <button class="mural-paginacao-btn" :disabled="muralPage === 0" @click="carregarMensagens(muralPage - 1)"
+              :aria-label="t('mural.prevPage')">&#8592;</button>
+            <span class="mural-paginacao-info"
+              x-text="t('mural.pageInfo', { current: muralPage + 1, total: muralTotalPages })"></span>
+            <button class="mural-paginacao-btn" :disabled="muralPage === muralTotalPages - 1"
+              @click="carregarMensagens(muralPage + 1)" :aria-label="t('mural.nextPage')">&#8594;</button>
+          </div>
+
+          <div class="section-divider"><span x-text="t('mural.leaveMessage')"></span></div>
+
+          <form id="mural-form" @submit.prevent="enviarMensagem()" novalidate>
+            <div class="mural-respondendo" x-show="muralIdResposta">
+              <span><span x-text="t('mural.replyingTo')"></span> <strong x-text="muralRespondendoNome"></strong></span>
+              <button type="button" class="mural-respondendo-cancelar" @click="cancelarResposta()"
+                :aria-label="t('mural.cancelReply')">&#x2715;</button>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="mural-nome" x-text="t('mural.form.name')"></label>
+              <input class="form-input" type="text" id="mural-nome" x-model="muralNome"
+                :placeholder="t('mural.form.namePlaceholder')" />
+            </div>
+            <div class="form-group mt-4">
+              <label class="form-label" for="mural-email-input">E-mail</label>
+              <input class="form-input" type="email" id="mural-email-input" x-model="muralEmail"
+                placeholder="seu@email.com" />
+            </div>
+            <div class="form-group mt-4">
+              <label class="form-label" for="mural-mensagem-input" x-text="t('mural.form.message')"></label>
+              <textarea class="form-input" id="mural-mensagem-input" rows="3" x-model="muralMensagem"
+                :placeholder="t('mural.form.messagePlaceholder')"></textarea>
+            </div>
+            <div class="alert alert-error mt-4" x-show="muralError" role="alert">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10" />
+                <line x1="12" y1="8" x2="12" y2="12" />
+                <line x1="12" y1="16" x2="12.01" y2="16" />
+              </svg>
+              <span x-text="muralError"></span>
+            </div>
+            <div class="alert alert-success mt-4" x-show="muralSuccess" role="alert">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                <polyline points="22 4 12 14.01 9 11.01" />
+              </svg>
+              <span x-text="t('mural.form.success')"></span>
+            </div>
+            <button type="submit" class="btn btn-primary btn-full mt-4" :disabled="muralSubmitting">
+              <span x-text="muralSubmitting ? t('mural.form.sending') : t('mural.form.send')"></span>
+              <span class="spinner" x-show="muralSubmitting"></span>
+            </button>
+          </form>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container text-center text-xs text-subtle">
+      <span x-text="t('footer.text')"></span><span x-show="footerQtd > 1"
+        x-text="t('footer.countSuffix', { qtd: footerQtd })"></span>
+    </div>
+  </footer>
+
+  <!-- Histórico Modal -->
+  <div x-cloak x-show="historicoOpen" class="modal-backdrop" role="dialog" aria-modal="true"
+    aria-labelledby="historico-title" :aria-hidden="historicoOpen ? 'false' : 'true'"
+    @click.self="historicoOpen = false">
+    <div class="modal-panel">
+      <div class="modal-header">
+        <span class="modal-title" id="historico-title" x-text="t('history.title')"></span>
+        <button class="modal-close" @click="historicoOpen = false" :aria-label="t('common.close')">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+            stroke-linecap="round">
+            <line x1="18" y1="6" x2="6" y2="18" />
+            <line x1="6" y1="6" x2="18" y2="18" />
+          </svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="historico-search">
+          <input type="email" class="form-input" x-ref="histEmail" x-model="historicoEmail"
+            :placeholder="t('history.emailPlaceholder')" autocomplete="email" @keydown.enter="buscarHistorico()" />
+          <button class="btn btn-primary" @click="buscarHistorico()" :disabled="historicoLoading"
+            x-text="historicoLoading ? t('history.searching') : t('history.search')"></button>
+        </div>
+        <p class="historico-empty" x-show="historicoState === 'empty'" x-text="t('history.empty')"></p>
+        <p class="historico-error" x-show="historicoState === 'error'" x-text="t('history.error')"></p>
+        <div class="historico-table-wrap" x-show="historicoState === 'ok'">
+          <table class="historico-table">
+            <thead>
+              <tr>
+                <th x-text="t('history.table.date')"></th>
+                <th x-text="t('history.table.cavalo')"></th>
+                <th x-text="t('history.table.esterno')"></th>
+                <th x-text="t('history.table.braco')"></th>
+                <th x-text="t('history.table.speedFrame')"></th>
+                <th x-text="t('history.table.mtbFrame')"></th>
+                <th x-text="t('history.table.saddleHeight')"></th>
+                <th x-text="t('history.table.topTube')"></th>
+              </tr>
+            </thead>
+            <tbody>
+              <template x-for="(item, i) in historicoItems" :key="i">
+                <tr>
+                  <td x-text="fmtDate(item.createdAt)"></td>
+                  <td x-text="fmt(item.cavalo) + ' cm'"></td>
+                  <td x-text="fmt(item.esterno) + ' cm'"></td>
+                  <td x-text="fmt(item.braco) + ' cm'"></td>
+                  <td x-text="fmt(item.quadroSpeed) + ' cm'"></td>
+                  <td x-text="fmt(item.quadroMtb) + ' ' + t('result.mtbFrame.unit')"></td>
+                  <td x-text="fmt(item.alturaSelim) + ' cm'"></td>
+                  <td x-text="fmt(item.topTubeEfetivo) + ' cm'"></td>
+                </tr>
+              </template>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</body>
+
+</html>

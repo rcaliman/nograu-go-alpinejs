@@ -1,0 +1,522 @@
+const FIT_LIMITS = {
+  cavalo:  { min: 60, max: 115 },
+  esterno: { min: 45, max: 165 },
+  braco:   { min: 40, max: 100 },
+};
+
+const TRANSLATIONS = {
+  pt: {
+    'meta.title': 'Nograu — Calculadoras Grátis: Bike Fit e Conversor de Medidas',
+
+    'nav.bikefit': 'bike fit',
+    'nav.loan': 'cálculo de empréstimo',
+    'nav.converter': 'conversor de medidas',
+    'nav.tagpet': 'tag pet',
+    'nav.history': 'cálculos anteriores',
+    'nav.toggleAria': 'Abrir menu',
+    'lang.toggleAria': 'Alternar idioma',
+
+    'hero.title': 'Calcule seu Bike Fit',
+    'hero.subtitle': 'Informe suas medidas corporais e receba as recomendações de quadro e selim personalizadas.',
+
+    'form.sectionMeasures': 'Suas medidas',
+
+    'form.cavalo.label': 'Cavalo',
+    'form.cavalo.imgAlt': 'Medida do cavalo (inseam)',
+    'form.cavalo.placeholder': 'ex: 81',
+    'form.cavalo.hint1': 'A distância do chão até a virilha.',
+    'form.cavalo.hint2': 'Meça encostado na parede e com as pernas bem juntas.',
+    'form.cavalo.hint3': 'Use um livro entre elas para facilitar.',
+    'form.cavalo.hint4': 'Em centímetros.',
+
+    'form.esterno.label': 'Esterno',
+    'form.esterno.imgAlt': 'Medida do esterno',
+    'form.esterno.placeholder': 'ex: 140',
+    'form.esterno.hint1': 'A distância do chão até o esterno.',
+    'form.esterno.hint2': 'Identifique-o pela parte de baixo do "V" que tem logo abaixo do pescoço.',
+    'form.esterno.hint3': 'Distância em centímetros.',
+
+    'form.braco.label': 'Braço',
+    'form.braco.imgAlt': 'Medida do braço',
+    'form.braco.placeholder': 'ex: 64',
+    'form.braco.hint1': 'Estique o braço com o polegar para cima',
+    'form.braco.hint2': 'Meça a distância do ombro até o polegar',
+    'form.braco.hint3': 'Distância em centímetros.',
+
+    'form.email.hint': 'Para poder buscar se quiser consultar seu resultado',
+
+    'btn.calculating': 'Calculando…',
+    'btn.calculate': 'Calcular Bike Fit',
+
+    'error.fillAllFields': 'Preencha todos os campos antes de calcular.',
+    'error.invalidValues': 'Você digitou algum valor que parece incorreto, lembre-se de que deve usar apenas centímetros.',
+    'error.serverStatus': 'Erro {status}. Verifique os dados e tente novamente.',
+    'error.connectionFailed': 'Falha na conexão com o servidor. Tente novamente mais tarde.',
+
+    'result.title': 'Resultado',
+
+    'result.speedFrame.label': 'Quadro Speed',
+    'result.speedFrame.description': 'Por tradição, o tamanho do quadro road costuma ser informado pela medida do tubo do selim (seat tube), contada do centro do movimento central até o topo do tubo (center‑to‑top). É comumente medido em centímetros. Tamanhos usuais: 48, 50, 52, 54, 56, 58, 60 cm. Sempre confira a convenção do fabricante (center‑to‑top vs center‑to‑center) e a tabela de geometria.',
+
+    'result.mtbFrame.label': 'Quadro MTB',
+    'result.mtbFrame.unit': 'pol',
+    'result.mtbFrame.description': 'Em mountain bikes os fabricantes frequentemente usam classificações S/M/L/XL ou medidas do seat tube em polegadas/centímetros (ex.: 13", 15", 17", 19", 21"). Hoje, o que mais importa para o ajuste é o top tube efetivo e o reach, que definem a posição do ciclista; consulte a geometria do fabricante para escolher o tamanho correto.',
+
+    'result.saddleHeight.label': 'Altura do Selim',
+    'result.saddleHeight.description': 'Medida do centro do movimento central até o topo do selim. Serve como referência para ajustar a altura do selim; pequenas variações (±1–2 cm) são normais conforme preferência, tipo de pedal e ângulo de pedalada. Verifique o alinhamento do joelho durante o giro.',
+
+    'result.topTube.label': 'Top Tube Efetivo',
+    'result.topTube.description': 'Top tube efetivo é a medida horizontal que define o reach do ciclista (posição entre selim e guidão). É essencial para a postura e conforto; ao escolher um quadro compare o top tube efetivo e o comprimento do avanço (mesa) na tabela de geometria do fabricante.',
+
+    'result.important.title': 'Muito Importante',
+    'result.important.text1': 'Este bike fit virtual usa uma fórmula simples e consagrada, mas serve apenas como um ponto de partida. Sempre que possível, procure um profissional, seja para adquirir uma nova bicicleta ou para se ajustar à que você já possui. Corpos diferentes podem ter sensações distintas com o mesmo equipamento. Consulte um profissional, especialmente se continuar sentindo dores ou desconforto após aplicar as medidas calculadas.',
+    'result.important.text2': '* O método LeMond, utilizado aqui, foi criado pelo tricampeão do Tour de France, Greg LeMond.',
+
+    'mural.title': 'Mural de Mensagens',
+    'mural.loading': 'Carregando mensagens…',
+    'mural.empty': 'Nenhuma mensagem ainda. Seja o primeiro!',
+    'mural.loadError': 'Erro ao carregar mensagens. Tente novamente.',
+    'mural.replyingToInline': 'respondendo a',
+    'mural.replyLink': 'responder',
+    'mural.like': 'Curtir mensagem',
+    'mural.unlike': 'Remover curtida',
+    'mural.prevPage': 'Página anterior',
+    'mural.nextPage': 'Próxima página',
+    'mural.pageInfo': 'Página {current} de {total}',
+    'mural.leaveMessage': 'Deixe sua mensagem',
+    'mural.replyingTo': 'Respondendo a',
+    'mural.cancelReply': 'Cancelar resposta',
+    'mural.form.name': 'Nome',
+    'mural.form.namePlaceholder': 'Seu nome',
+    'mural.form.message': 'Mensagem',
+    'mural.form.messagePlaceholder': 'Deixe sua mensagem…',
+    'mural.form.errorFillAll': 'Preencha todos os campos.',
+    'mural.form.errorSend': 'Erro ao enviar mensagem. Tente novamente.',
+    'mural.form.success': 'Mensagem enviada! Obrigado pela participação.',
+    'mural.form.sending': 'Enviando…',
+    'mural.form.send': 'Enviar mensagem',
+
+    'footer.text': 'Bike Fit — cálculo baseado em medidas antropométricas',
+    'footer.countSuffix': ' · quantidade de cálculos no dia: {qtd}',
+
+    'common.close': 'Fechar',
+    'common.at': 'às',
+
+    'history.title': 'Cálculos Anteriores',
+    'history.emailPlaceholder': 'Digite seu e-mail para buscar',
+    'history.searching': 'Buscando…',
+    'history.search': 'Buscar',
+    'history.empty': 'Nenhum cálculo encontrado para este e-mail.',
+    'history.error': 'Erro ao buscar cálculos. Tente novamente.',
+    'history.table.date': 'Data',
+    'history.table.cavalo': 'Cavalo',
+    'history.table.esterno': 'Esterno',
+    'history.table.braco': 'Braço',
+    'history.table.speedFrame': 'Quadro Speed',
+    'history.table.mtbFrame': 'Quadro MTB',
+    'history.table.saddleHeight': 'Altura Selim',
+    'history.table.topTube': 'Top Tube',
+  },
+  en: {
+    'meta.title': 'Nograu — Free Calculators: Bike Fit and Unit Converter',
+
+    'nav.bikefit': 'bike fit',
+    'nav.loan': 'loan calculator',
+    'nav.converter': 'unit converter',
+    'nav.tagpet': 'tag pet',
+    'nav.history': 'previous calculations',
+    'nav.toggleAria': 'Open menu',
+    'lang.toggleAria': 'Switch language',
+
+    'hero.title': 'Calculate your Bike Fit',
+    'hero.subtitle': 'Enter your body measurements and get personalized frame and saddle recommendations.',
+
+    'form.sectionMeasures': 'Your measurements',
+
+    'form.cavalo.label': 'Inseam',
+    'form.cavalo.imgAlt': 'Inseam measurement',
+    'form.cavalo.placeholder': 'e.g. 81',
+    'form.cavalo.hint1': 'The distance from the floor to your groin.',
+    'form.cavalo.hint2': 'Measure standing against a wall with your legs close together.',
+    'form.cavalo.hint3': 'Use a book between your legs to make it easier.',
+    'form.cavalo.hint4': 'In centimeters.',
+
+    'form.esterno.label': 'Sternum',
+    'form.esterno.imgAlt': 'Sternum measurement',
+    'form.esterno.placeholder': 'e.g. 140',
+    'form.esterno.hint1': 'The distance from the floor to your sternum.',
+    'form.esterno.hint2': 'Find it at the bottom of the "V" just below your neck.',
+    'form.esterno.hint3': 'Distance in centimeters.',
+
+    'form.braco.label': 'Arm',
+    'form.braco.imgAlt': 'Arm measurement',
+    'form.braco.placeholder': 'e.g. 64',
+    'form.braco.hint1': 'Stretch your arm out with your thumb pointing up',
+    'form.braco.hint2': 'Measure the distance from your shoulder to your thumb',
+    'form.braco.hint3': 'Distance in centimeters.',
+
+    'form.email.hint': 'So you can look it up later if you want to check your result',
+
+    'btn.calculating': 'Calculating…',
+    'btn.calculate': 'Calculate Bike Fit',
+
+    'error.fillAllFields': 'Fill in all fields before calculating.',
+    'error.invalidValues': 'One of the values you entered looks incorrect — remember to use centimeters only.',
+    'error.serverStatus': 'Error {status}. Check your data and try again.',
+    'error.connectionFailed': 'Connection to the server failed. Please try again later.',
+
+    'result.title': 'Result',
+
+    'result.speedFrame.label': 'Road Frame',
+    'result.speedFrame.description': 'Traditionally, road frame size is given by the seat tube measurement, from the center of the bottom bracket to the top of the tube (center‑to‑top). It\'s usually measured in centimeters. Common sizes: 48, 50, 52, 54, 56, 58, 60 cm. Always check the manufacturer\'s convention (center‑to‑top vs center‑to‑center) and the geometry chart.',
+
+    'result.mtbFrame.label': 'MTB Frame',
+    'result.mtbFrame.unit': 'in',
+    'result.mtbFrame.description': 'For mountain bikes, manufacturers often use S/M/L/XL classifications or seat tube measurements in inches/centimeters (e.g. 13", 15", 17", 19", 21"). Nowadays, what matters most for fit is the effective top tube and reach, which define the rider\'s position; check the manufacturer\'s geometry chart to pick the right size.',
+
+    'result.saddleHeight.label': 'Saddle Height',
+    'result.saddleHeight.description': 'Measured from the center of the bottom bracket to the top of the saddle. It\'s a reference for adjusting saddle height; small variations (±1–2 cm) are normal depending on preference, pedal type and pedaling angle. Check knee alignment during the pedal stroke.',
+
+    'result.topTube.label': 'Effective Top Tube',
+    'result.topTube.description': 'The effective top tube is the horizontal measurement that defines the rider\'s reach (the position between saddle and handlebar). It\'s essential for posture and comfort; when choosing a frame, compare the effective top tube and stem length on the manufacturer\'s geometry chart.',
+
+    'result.important.title': 'Very Important',
+    'result.important.text1': 'This virtual bike fit uses a simple, well-established formula, but it\'s only meant as a starting point. Whenever possible, see a professional, whether you\'re buying a new bike or adjusting the one you already have. Different bodies can feel differently with the same equipment. Consult a professional, especially if you continue to feel pain or discomfort after applying the calculated measurements.',
+    'result.important.text2': '* The LeMond method used here was created by three-time Tour de France champion Greg LeMond.',
+
+    'mural.title': 'Message Board',
+    'mural.loading': 'Loading messages…',
+    'mural.empty': 'No messages yet. Be the first!',
+    'mural.loadError': 'Error loading messages. Please try again.',
+    'mural.replyingToInline': 'replying to',
+    'mural.replyLink': 'reply',
+    'mural.like': 'Like message',
+    'mural.unlike': 'Remove like',
+    'mural.prevPage': 'Previous page',
+    'mural.nextPage': 'Next page',
+    'mural.pageInfo': 'Page {current} of {total}',
+    'mural.leaveMessage': 'Leave your message',
+    'mural.replyingTo': 'Replying to',
+    'mural.cancelReply': 'Cancel reply',
+    'mural.form.name': 'Name',
+    'mural.form.namePlaceholder': 'Your name',
+    'mural.form.message': 'Message',
+    'mural.form.messagePlaceholder': 'Leave your message…',
+    'mural.form.errorFillAll': 'Fill in all fields.',
+    'mural.form.errorSend': 'Error sending message. Please try again.',
+    'mural.form.success': 'Message sent! Thanks for participating.',
+    'mural.form.sending': 'Sending…',
+    'mural.form.send': 'Send message',
+
+    'footer.text': 'Bike Fit — calculation based on anthropometric measurements',
+    'footer.countSuffix': ' · calculations today: {qtd}',
+
+    'common.close': 'Close',
+    'common.at': 'at',
+
+    'history.title': 'Previous Calculations',
+    'history.emailPlaceholder': 'Enter your email to search',
+    'history.searching': 'Searching…',
+    'history.search': 'Search',
+    'history.empty': 'No calculations found for this email.',
+    'history.error': 'Error searching calculations. Please try again.',
+    'history.table.date': 'Date',
+    'history.table.cavalo': 'Inseam',
+    'history.table.esterno': 'Sternum',
+    'history.table.braco': 'Arm',
+    'history.table.speedFrame': 'Road Frame',
+    'history.table.mtbFrame': 'MTB Frame',
+    'history.table.saddleHeight': 'Saddle Height',
+    'history.table.topTube': 'Top Tube',
+  },
+};
+
+function detectLang() {
+  const saved = localStorage.getItem('nograu-lang');
+  if (saved === 'pt' || saved === 'en') return saved;
+  const nav = (navigator.language || navigator.userLanguage || '').toLowerCase();
+  return nav.startsWith('pt') ? 'pt' : 'en';
+}
+
+function getCookie(name) {
+  const prefix = `${encodeURIComponent(name)}=`;
+  const cookie = document.cookie
+    .split('; ')
+    .find(item => item.startsWith(prefix));
+
+  if (!cookie) return '';
+  try {
+    return decodeURIComponent(cookie.slice(prefix.length));
+  } catch {
+    return '';
+  }
+}
+
+function setCookie(name, value) {
+  const oneYear = 60 * 60 * 24 * 365;
+  const secure = location.protocol === 'https:' ? '; Secure' : '';
+  document.cookie = `${encodeURIComponent(name)}=${encodeURIComponent(value)}; Path=/; Max-Age=${oneYear}; SameSite=Lax${secure}`;
+}
+
+function appData() {
+  return {
+    lang: detectLang(),
+
+    fitCavalo: '', fitEsterno: '', fitBraco: '', fitEmail: '',
+    fitLoading: false, fitError: '', fitResult: null,
+    footerQtd: 0,
+
+    historicoOpen: false, historicoEmail: '',
+    historicoLoading: false, historicoItems: [], historicoState: 'idle',
+
+    muralMessages: [], muralPage: 0, muralTotalPages: 0,
+    muralLoading: true, muralLoadError: false,
+    muralNome: '', muralEmail: '', muralMensagem: '',
+    muralSubmitting: false, muralSuccess: false, muralError: '',
+    muralIdResposta: null, muralRespondendoNome: '',
+    muralRespostas: {},
+    visitanteId: '',
+
+    init() {
+      this.visitanteId = localStorage.getItem('nograu-visitante-id') || crypto.randomUUID();
+      localStorage.setItem('nograu-visitante-id', this.visitanteId);
+      this.muralNome = getCookie('nograu-mural-nome');
+      this.muralEmail = getCookie('nograu-mural-email');
+      document.documentElement.lang = this.lang === 'en' ? 'en' : 'pt-BR';
+      document.title = this.t('meta.title');
+      this.carregarMensagens(0);
+      fetch('/fit/qtd', { headers: this.apiHeaders() })
+        .then(r => r.json())
+        .then(qtd => { if (qtd > 1) this.footerQtd = qtd; })
+        .catch(() => {});
+    },
+
+    t(key, params) {
+      let str = TRANSLATIONS[this.lang]?.[key] ?? TRANSLATIONS.pt[key] ?? key;
+      if (params) for (const k in params) str = str.replace(`{${k}}`, params[k]);
+      return str;
+    },
+
+    apiHeaders(extra) {
+      return {
+        'Accept-Language': this.lang === 'en' ? 'en' : 'pt-BR',
+        'X-Visitante-Id': this.visitanteId,
+        ...extra,
+      };
+    },
+
+    setLang(lang) {
+      if (lang !== 'pt' && lang !== 'en') return;
+      this.lang = lang;
+      localStorage.setItem('nograu-lang', lang);
+      document.documentElement.lang = lang === 'en' ? 'en' : 'pt-BR';
+      document.title = this.t('meta.title');
+    },
+
+    fmt(value, decimals = 1) {
+      if (value == null) return '—';
+      return Number(value).toFixed(decimals);
+    },
+
+    fmtDate(iso) {
+      if (!iso) return '—';
+      const locale = this.lang === 'en' ? 'en-US' : 'pt-BR';
+      const d = new Date(iso);
+      return d.toLocaleDateString(locale) + ' ' +
+        d.toLocaleTimeString(locale, { hour: '2-digit', minute: '2-digit' });
+    },
+
+    fmtMuralDate(iso) {
+      if (!iso) return '';
+      const locale = this.lang === 'en' ? 'en-US' : 'pt-BR';
+      const d = new Date(iso);
+      return d.toLocaleDateString(locale) + ' ' + this.t('common.at') + ' ' +
+        d.toLocaleTimeString(locale, { hour: '2-digit', minute: '2-digit' });
+    },
+
+    async submitFit() {
+      this.fitError = '';
+      const cavalo  = parseFloat(this.fitCavalo);
+      const esterno = parseFloat(this.fitEsterno);
+      const braco   = parseFloat(this.fitBraco);
+      const email   = this.fitEmail.trim();
+      if (!cavalo || !esterno || !braco || !email) {
+        this.fitError = this.t('error.fillAllFields');
+        return;
+      }
+      if (
+        cavalo  < FIT_LIMITS.cavalo.min  || cavalo  > FIT_LIMITS.cavalo.max  ||
+        esterno < FIT_LIMITS.esterno.min || esterno > FIT_LIMITS.esterno.max ||
+        braco   < FIT_LIMITS.braco.min   || braco   > FIT_LIMITS.braco.max
+      ) {
+        this.fitError = this.t('error.invalidValues');
+        return;
+      }
+      this.fitLoading = true;
+      try {
+        const res = await fetch('/fit', {
+          method: 'POST',
+          headers: this.apiHeaders({ 'Content-Type': 'application/json' }),
+          body: JSON.stringify({ cavalo, esterno, braco, email }),
+        });
+        if (!res.ok) {
+          const body = await res.json().catch(() => null);
+          this.fitError = body?.errors
+            ? this.t('error.invalidValues')
+            : body?.message || this.t('error.serverStatus', { status: res.status });
+          return;
+        }
+        this.fitResult = await res.json();
+        this.$nextTick(() =>
+          document.getElementById('result-section')
+            ?.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
+        );
+      } catch {
+        this.fitError = this.t('error.connectionFailed');
+      } finally {
+        this.fitLoading = false;
+      }
+    },
+
+    async buscarHistorico() {
+      if (!this.historicoEmail.trim()) return;
+      this.historicoLoading = true;
+      this.historicoState = 'idle';
+      this.historicoItems = [];
+      try {
+        const res = await fetch('/fit?email=' + encodeURIComponent(this.historicoEmail.trim()), { headers: this.apiHeaders() });
+        if (!res.ok) throw new Error();
+        const data = await res.json();
+        this.historicoItems = data;
+        this.historicoState = data.length ? 'ok' : 'empty';
+      } catch {
+        this.historicoState = 'error';
+      } finally {
+        this.historicoLoading = false;
+      }
+    },
+
+    async carregarMensagens(page) {
+      this.muralLoading = true;
+      this.muralLoadError = false;
+      this.muralMessages = [];
+      try {
+        const res = await fetch(`/mensagem?page=${page}&size=5&sort=createdAt,desc`, { headers: this.apiHeaders() });
+        if (!res.ok) throw new Error();
+        const data = await res.json();
+        this.muralMessages = data.content || [];
+        this.muralPage = data.page?.number ?? 0;
+        this.muralTotalPages = data.page?.totalPages ?? 0;
+
+        const ids = [...new Set(
+          this.muralMessages
+            .map(m => m.idResposta)
+            .filter(id => id && !this.muralRespostas[id])
+        )];
+        await Promise.all(ids.map(id =>
+          fetch(`/mensagem/${id}`, { headers: this.apiHeaders() })
+            .then(r => r.ok ? r.json() : null)
+            .then(m => { if (m) this.muralRespostas[m.id] = m; })
+            .catch(() => {})
+        ));
+
+        if (page > 0)
+          this.$nextTick(() =>
+            document.getElementById('mural-lista')
+              ?.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
+          );
+      } catch {
+        this.muralLoadError = true;
+      } finally {
+        this.muralLoading = false;
+      }
+    },
+
+    responder(m) {
+      this.muralIdResposta = m.id;
+      this.muralRespondendoNome = m.nome;
+      this.$nextTick(() => {
+        document.getElementById('mural-form')
+          ?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      });
+    },
+
+    cancelarResposta() {
+      this.muralIdResposta = null;
+      this.muralRespondendoNome = '';
+    },
+
+    async alternarLike(mensagem) {
+      if (mensagem.likeLoading) return;
+
+      const curtidaAnterior = Boolean(mensagem.curtida);
+      const totalAnterior = Number(mensagem.totalLikes) || 0;
+      mensagem.likeLoading = true;
+      mensagem.curtida = !curtidaAnterior;
+      mensagem.totalLikes = Math.max(0, totalAnterior + (mensagem.curtida ? 1 : -1));
+
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 8000);
+      try {
+        const res = await fetch(`/mensagem/${mensagem.id}/like`, {
+          method: 'POST',
+          headers: this.apiHeaders(),
+          signal: controller.signal,
+        });
+        if (!res.ok) throw new Error();
+        const data = await res.json();
+        mensagem.totalLikes = data.totalLikes;
+        mensagem.curtida = data.curtida;
+      } catch {
+        mensagem.totalLikes = totalAnterior;
+        mensagem.curtida = curtidaAnterior;
+      } finally {
+        clearTimeout(timeout);
+        mensagem.likeLoading = false;
+      }
+    },
+
+    async enviarMensagem() {
+      this.muralError = '';
+      this.muralSuccess = false;
+      const nome     = this.muralNome.trim();
+      const email    = this.muralEmail.trim();
+      const mensagem = this.muralMensagem.trim();
+      if (!nome || !email || !mensagem) {
+        this.muralError = this.t('mural.form.errorFillAll');
+        return;
+      }
+      this.muralSubmitting = true;
+      try {
+        const res = await fetch('/mensagem', {
+          method: 'POST',
+          headers: this.apiHeaders({ 'Content-Type': 'application/json' }),
+          body: JSON.stringify({ nome, email, mensagem, idResposta: this.muralIdResposta || null }),
+        });
+        if (!res.ok) throw new Error();
+        setCookie('nograu-mural-nome', nome);
+        setCookie('nograu-mural-email', email);
+        this.muralSuccess = true;
+        this.muralNome = nome;
+        this.muralEmail = email;
+        this.muralMensagem = '';
+        this.muralIdResposta = null;
+        this.muralRespondendoNome = '';
+        this.carregarMensagens(0);
+      } catch {
+        this.muralError = this.t('mural.form.errorSend');
+      } finally {
+        this.muralSubmitting = false;
+      }
+    },
+
+  };
+}
+
+document.addEventListener('alpine:initialized', () => {
+  window.NOGRAU_NAV = {
+    t: (key) => Alpine.$data(document.body).t(key),
+    getLang: () => Alpine.$data(document.body).lang,
+    setLang: (lang) => Alpine.$data(document.body).setLang(lang),
+  };
+});

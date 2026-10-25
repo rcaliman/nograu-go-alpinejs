@@ -1,0 +1,22 @@
+[Unit]
+Description=No Grau (Go)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=nograu
+Group=nograu
+WorkingDirectory=/opt/nograu
+EnvironmentFile=/etc/nograu/nograu.env
+ExecStart=/opt/nograu/nograu
+Restart=on-failure
+RestartSec=5
+TimeoutStopSec=20
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+
+[Install]
+WantedBy=multi-user.target
